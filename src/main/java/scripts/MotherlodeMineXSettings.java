@@ -1,4 +1,4 @@
-package scripts.api;
+package scripts;
 
 import scripts.api.interfaces.Workable;
 

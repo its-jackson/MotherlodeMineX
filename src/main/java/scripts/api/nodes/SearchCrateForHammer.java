@@ -1,14 +1,12 @@
 package scripts.api.nodes;
 
 import org.tribot.script.sdk.Inventory;
-import org.tribot.script.sdk.Log;
 import org.tribot.script.sdk.Waiting;
 import org.tribot.script.sdk.query.Query;
 import org.tribot.script.sdk.types.Area;
 import org.tribot.script.sdk.types.GameObject;
 import org.tribot.script.sdk.types.InventoryItem;
 import scripts.MotherlodeMineX;
-import scripts.api.MotherlodeMineXSettings;
 import scripts.api.PayDirt;
 import scripts.api.Work;
 import scripts.api.Worker;
@@ -16,7 +14,6 @@ import scripts.api.interfaces.Nodeable;
 import scripts.api.interfaces.Workable;
 
 import java.util.List;
-import java.util.function.BooleanSupplier;
 
 public class SearchCrateForHammer implements Nodeable, Workable {
 

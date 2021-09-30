@@ -6,12 +6,11 @@ import org.tribot.api2007.types.RSTile;
 import org.tribot.api2007.types.RSVarBit;
 import org.tribot.script.sdk.*;
 import org.tribot.script.sdk.cache.BankCache;
-import org.tribot.script.sdk.query.InventoryQuery;
 import org.tribot.script.sdk.query.Query;
 import org.tribot.script.sdk.types.*;
 import org.tribot.script.sdk.walking.GlobalWalking;
 import org.tribot.script.sdk.walking.WalkState;
-import scripts.api.MotherlodeMineXSettings;
+import scripts.MotherlodeMineXSettings;
 import scripts.api.Work;
 import scripts.api.antiban.AntiBan;
 
