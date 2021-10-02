@@ -3,9 +3,10 @@ package scripts.api.nodes;
 import org.tribot.script.sdk.Bank;
 import org.tribot.script.sdk.Equipment;
 import org.tribot.script.sdk.tasks.BankTask;
-import scripts.MotherlodeMineX;
+import scripts.MotherlodeMineXVariables;
 import scripts.api.Work;
 import scripts.api.Worker;
+import scripts.api.antiban.AntiBan;
 import scripts.api.interfaces.Nodeable;
 import scripts.api.interfaces.Workable;
 
@@ -24,6 +25,9 @@ public class RetrieveWorkerEquipment implements Nodeable, Workable {
 
     @Override
     public void execute() {
+        MotherlodeMineXVariables vars = MotherlodeMineXVariables.get();
+        int sleepTime = AntiBan.sleep(vars.getWaitTimes());
+
         log("Retrieving equipment");
 
         if (!Bank.isOpen()) {
@@ -62,7 +66,7 @@ public class RetrieveWorkerEquipment implements Nodeable, Workable {
         // is at bank
         if (isAtBank(getWork().getBankLocation())) {
             if (workerHasOptimalPickaxe(Worker.getInstance().getPickaxe())) {
-                return !workerHasMotherlodeEquipment(MotherlodeMineX.getSettings());
+                return !workerHasMotherlodeEquipment(MotherlodeMineXVariables.get().getSettings());
             }
         }
         return false;

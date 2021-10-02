@@ -1,7 +1,7 @@
 package scripts;
 
-import scripts.api.Work;
-import scripts.api.interfaces.Workable;
+import scripts.api.interfaces.Nodeable;
+import scripts.gui.GuiFx;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,8 +15,13 @@ public class MotherlodeMineXVariables {
 
     private static final MotherlodeMineXVariables instance = new MotherlodeMineXVariables();
 
-    private List<Work> work = new ArrayList<>();
+    private GuiFx gui;
+    private URL fxml;
+
+    private MotherlodeMineXSettings settings = new MotherlodeMineXSettings();
+    private List<Nodeable> nodes = new ArrayList<>();
     private List<Integer> waitTimes = new ArrayList<>();
+    private double currentFatigueMultiple;
 
     private boolean start;
     private boolean optimization;
@@ -29,10 +34,6 @@ public class MotherlodeMineXVariables {
     private final Color main_font_colour = new Color(22, 196, 219);
 
     public MotherlodeMineXVariables() {}
-
-    public MotherlodeMineXVariables(List<Work> work) {
-        this.work = work;
-    }
 
     /**
      * Return an image from the internet.
@@ -52,16 +53,48 @@ public class MotherlodeMineXVariables {
         return instance;
     }
 
-    public List<Work> getWork() {
-        return work;
+    public GuiFx getGui() {
+        return gui;
     }
 
-    public void setWork(List<Work> work) {
-        this.work = work;
+    public void setGui(GuiFx gui) {
+        this.gui = gui;
+    }
+
+    public URL getFxml() {
+        return fxml;
+    }
+
+    public void setFxml(URL fxml) {
+        this.fxml = fxml;
+    }
+
+    public MotherlodeMineXSettings getSettings() {
+        return settings;
+    }
+
+    public void setSettings(MotherlodeMineXSettings settings) {
+        this.settings = settings;
+    }
+
+    public List<Nodeable> getNodes() {
+        return nodes;
+    }
+
+    public void setNodes(List<Nodeable> nodes) {
+        this.nodes = nodes;
     }
 
     public List<Integer> getWaitTimes() {
         return waitTimes;
+    }
+
+    public double getCurrentFatigueMultiple() {
+        return currentFatigueMultiple;
+    }
+
+    public void setCurrentFatigueMultiple(double currentFatigueMultiple) {
+        this.currentFatigueMultiple = currentFatigueMultiple;
     }
 
     public boolean isStart() {

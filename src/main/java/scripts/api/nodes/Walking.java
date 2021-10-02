@@ -1,6 +1,5 @@
 package scripts.api.nodes;
 
-import dax.api_lib.models.RunescapeBank;
 import org.tribot.script.sdk.Bank;
 import org.tribot.script.sdk.Inventory;
 import org.tribot.script.sdk.MyPlayer;
@@ -9,9 +8,9 @@ import org.tribot.script.sdk.cache.BankCache;
 import org.tribot.script.sdk.query.Query;
 import org.tribot.script.sdk.types.Area;
 import org.tribot.script.sdk.types.GameObject;
-import org.tribot.script.sdk.walking.GlobalWalking;
-import scripts.MotherlodeMineX;
+import scripts.MotherlodeMineXVariables;
 import scripts.api.*;
+import scripts.api.antiban.AntiBan;
 import scripts.api.interfaces.Nodeable;
 import scripts.api.interfaces.Workable;
 
@@ -39,13 +38,16 @@ public class Walking implements Nodeable, Workable {
 
     @Override
     public void execute() {
+        MotherlodeMineXVariables vars = MotherlodeMineXVariables.get();
+        int sleepTime = AntiBan.sleep(vars.getWaitTimes());
+
         boolean walkResult = false;
 
         if (isWalkToHopper()) {
             // walk to hopper
             log("Walking to hopper");
-            if (getWork().getActualResourceLocation().equals(ResourceLocation.MOTHERLODE_MINE_UPPER_LEVEL)) {
-                if (getWork().getActualResourceLocation().getArea().containsMyPlayer()) {
+            if (getWork().getResourceLocation().equals(ResourceLocation.MOTHERLODE_MINE_UPPER_LEVEL)) {
+                if (getWork().getResourceLocation().getArea().containsMyPlayer()) {
                     //walkResult = climbMotherlodeMineLadderInside();
                     if (!climbMotherlodeMineLadderInside()) {
                         walkResult = walkToTile(LADDER_UPPER_WALK_TILE);
@@ -64,14 +66,14 @@ public class Walking implements Nodeable, Workable {
         } else if (isWalkToOreVein()) {
             // walk to mining area
             log("Walking to ore vein");
-            if (getWork().getActualResourceLocation().equals(ResourceLocation.MOTHERLODE_MINE_UPPER_LEVEL)) {
+            if (getWork().getResourceLocation().equals(ResourceLocation.MOTHERLODE_MINE_UPPER_LEVEL)) {
                 walkResult = walkToMotherlodeMineUpperLevelOutside();
                 if (walkResult) {
                     Waiting.waitUniform(3000, 5000);
-                    walkResult = walkToTile(getWork().getActualResourceLocation().getArea().getRandomTile());
+                    walkResult = walkToTile(getWork().getResourceLocation().getArea().getRandomTile());
                 }
             } else {
-                walkResult = walkToTile(getWork().getActualResourceLocation().getArea().getRandomTile());
+                walkResult = walkToTile(getWork().getResourceLocation().getArea().getRandomTile());
             }
             setWalkToOreVein(false);
         } else if (isWalkToBrokenStrut()) {
@@ -156,7 +158,7 @@ public class Walking implements Nodeable, Workable {
     private boolean shouldWalkToOreVeins() {
         if (!Inventory.isFull()) {
             if (workerHasOptimalPickaxe(Worker.getInstance().getPickaxe())) {
-                if (workerHasMotherlodeEquipment(MotherlodeMineX.getSettings())) {
+                if (workerHasMotherlodeEquipment(MotherlodeMineXVariables.get().getSettings())) {
                     if (!workerIsInLocation(getWork())) {
                         if (inventoryContainsHammer()) {
                             if (!payDirtSackIsFull() && !payDirtSackAlmostFull(PayDirt.getFuturePayDirtSackCount())) {
@@ -227,7 +229,7 @@ public class Walking implements Nodeable, Workable {
         // inventory is full of pay-dirt
         // inventory does not contain hammer
         if (workerHasOptimalPickaxe(Worker.getInstance().getPickaxe())) {
-            if (workerHasMotherlodeEquipment(MotherlodeMineX.getSettings())) {
+            if (workerHasMotherlodeEquipment(MotherlodeMineXVariables.get().getSettings())) {
                 if (!isAtHammerCrate()) {
                     if (!payDirtSackIsFull() && !payDirtSackAlmostFull(PayDirt.getFuturePayDirtSackCount())) {
                         if (!inventoryContainsHammer()) {
@@ -254,7 +256,7 @@ public class Walking implements Nodeable, Workable {
     private boolean shouldUpgradePickAxeFromBank() {
         if (BankCache.isInitialized()) {
             log("Bank initialized");
-            if (!MotherlodeMineX.getSettings().isDoNotUpgrade()) {
+            if (!MotherlodeMineXVariables.get().getSettings().isDoNotUpgrade()) {
                 if (workerHasBetterPickAxe(Worker.getInstance().getActualMiningLevel(), Worker.getInstance().getPickaxe())
                         .isPresent()) {
                     if (!isAtBank(getWork().getBankLocation())) {
@@ -275,7 +277,7 @@ public class Walking implements Nodeable, Workable {
         // is at bank
         if (!isAtBank(getWork().getBankLocation())) {
             if (workerHasOptimalPickaxe(Worker.getInstance().getPickaxe())) {
-                if (!workerHasMotherlodeEquipment(MotherlodeMineX.getSettings())) {
+                if (!workerHasMotherlodeEquipment(MotherlodeMineXVariables.get().getSettings())) {
                     setWalkToBankRetrieveEquipment(true);
                     return isWalkToBankRetrieveEquipment();
                 }

@@ -1,157 +1,37 @@
 package scripts;
 
 import scripts.api.interfaces.Workable;
+import scripts.api.works.Mining;
+import scripts.api.works.MotherlodeMine;
+
+import java.util.List;
 
 public class MotherlodeMineXSettings {
 
     private boolean repeat;
     private boolean repeatShuffle;
+    private boolean doNotRepeat;
 
+    private String antiBanSeed;
+    private boolean useAntiBanSeed;
     private boolean fatigue;
     private boolean microSleep;
 
     private boolean doNotUpgrade;
 
     private boolean wearProspectorEquipment;
-    private boolean gemBag;
-    private boolean coalBag;
+    private boolean useGemBag;
+    private boolean useCoalBag;
 
     private boolean worldHop;
     private boolean worldHopRandom;
+    private double worldHopFactor;
 
     private Workable.PickAxe desiredPickaxe;
+    private List<MotherlodeMine> motherlodeWork;
+    private List<Mining> miningWork;
 
     public MotherlodeMineXSettings() {}
-
-    public MotherlodeMineXSettings(boolean repeat) {
-        this.repeat = repeat;
-    }
-
-    public MotherlodeMineXSettings(boolean repeat, boolean repeatShuffle) {
-        this.repeat = repeat;
-        this.repeatShuffle = repeatShuffle;
-    }
-
-    public MotherlodeMineXSettings(boolean repeat, boolean repeatShuffle, boolean fatigue) {
-        this.repeat = repeat;
-        this.repeatShuffle = repeatShuffle;
-        this.fatigue = fatigue;
-    }
-
-    public MotherlodeMineXSettings(boolean repeat, boolean repeatShuffle, boolean fatigue, boolean microSleep) {
-        this.repeat = repeat;
-        this.repeatShuffle = repeatShuffle;
-        this.fatigue = fatigue;
-        this.microSleep = microSleep;
-    }
-
-    public MotherlodeMineXSettings(boolean repeat,
-                                   boolean repeatShuffle,
-                                   boolean fatigue,
-                                   boolean microSleep,
-                                   boolean doNotUpgrade)
-    {
-        this.repeat = repeat;
-        this.repeatShuffle = repeatShuffle;
-        this.fatigue = fatigue;
-        this.microSleep = microSleep;
-        this.doNotUpgrade = doNotUpgrade;
-    }
-
-    public MotherlodeMineXSettings(boolean repeat,
-                                   boolean repeatShuffle,
-                                   boolean fatigue,
-                                   boolean microSleep,
-                                   boolean doNotUpgrade,
-                                   boolean wearOptimalEquipment)
-    {
-        this.repeat = repeat;
-        this.repeatShuffle = repeatShuffle;
-        this.fatigue = fatigue;
-        this.microSleep = microSleep;
-        this.doNotUpgrade = doNotUpgrade;
-        this.wearProspectorEquipment = wearOptimalEquipment;
-    }
-
-    public MotherlodeMineXSettings(boolean repeat,
-                                   boolean repeatShuffle,
-                                   boolean fatigue,
-                                   boolean microSleep,
-                                   boolean doNotUpgrade,
-                                   boolean wearOptimalEquipment,
-                                   boolean gemBag)
-    {
-        this.repeat = repeat;
-        this.repeatShuffle = repeatShuffle;
-        this.fatigue = fatigue;
-        this.microSleep = microSleep;
-        this.doNotUpgrade = doNotUpgrade;
-        this.wearProspectorEquipment = wearOptimalEquipment;
-        this.gemBag = gemBag;
-    }
-
-    public MotherlodeMineXSettings(boolean repeat,
-                                   boolean repeatShuffle,
-                                   boolean fatigue,
-                                   boolean microSleep,
-                                   boolean doNotUpgrade,
-                                   boolean wearOptimalEquipment,
-                                   boolean gemBag,
-                                   boolean worldHop)
-    {
-        this.repeat = repeat;
-        this.repeatShuffle = repeatShuffle;
-        this.fatigue = fatigue;
-        this.microSleep = microSleep;
-        this.doNotUpgrade = doNotUpgrade;
-        this.wearProspectorEquipment = wearOptimalEquipment;
-        this.gemBag = gemBag;
-        this.worldHop = worldHop;
-    }
-
-    public MotherlodeMineXSettings(boolean repeat,
-                                   boolean repeatShuffle,
-                                   boolean fatigue,
-                                   boolean microSleep,
-                                   boolean doNotUpgrade,
-                                   boolean wearOptimalEquipment,
-                                   boolean gemBag,
-                                   boolean worldHop,
-                                   boolean worldHopRandom)
-    {
-        this.repeat = repeat;
-        this.repeatShuffle = repeatShuffle;
-        this.fatigue = fatigue;
-        this.microSleep = microSleep;
-        this.doNotUpgrade = doNotUpgrade;
-        this.wearProspectorEquipment = wearOptimalEquipment;
-        this.gemBag = gemBag;
-        this.worldHop = worldHop;
-        this.worldHopRandom = worldHopRandom;
-    }
-
-    public MotherlodeMineXSettings(boolean repeat,
-                                   boolean repeatShuffle,
-                                   boolean fatigue,
-                                   boolean microSleep,
-                                   boolean doNotUpgrade,
-                                   boolean wearOptimalEquipment,
-                                   boolean gemBag,
-                                   boolean worldHop,
-                                   boolean worldHopRandom,
-                                   Workable.PickAxe desiredPickaxe)
-    {
-        this.repeat = repeat;
-        this.repeatShuffle = repeatShuffle;
-        this.fatigue = fatigue;
-        this.microSleep = microSleep;
-        this.doNotUpgrade = doNotUpgrade;
-        this.wearProspectorEquipment = wearOptimalEquipment;
-        this.gemBag = gemBag;
-        this.worldHop = worldHop;
-        this.worldHopRandom = worldHopRandom;
-        this.desiredPickaxe = desiredPickaxe;
-    }
 
     public boolean isRepeat() {
         return repeat;
@@ -167,6 +47,30 @@ public class MotherlodeMineXSettings {
 
     public void setRepeatShuffle(boolean repeatShuffle) {
         this.repeatShuffle = repeatShuffle;
+    }
+
+    public boolean isDoNotRepeat() {
+        return doNotRepeat;
+    }
+
+    public void setDoNotRepeat(boolean doNotRepeat) {
+        this.doNotRepeat = doNotRepeat;
+    }
+
+    public boolean isUseAntiBanSeed() {
+        return useAntiBanSeed;
+    }
+
+    public void setUseAntiBanSeed(boolean useAntiBanSeed) {
+        this.useAntiBanSeed = useAntiBanSeed;
+    }
+
+    public String getAntiBanSeed() {
+        return antiBanSeed;
+    }
+
+    public void setAntiBanSeed(String antiBanSeed) {
+        this.antiBanSeed = antiBanSeed;
     }
 
     public boolean isFatigue() {
@@ -201,20 +105,20 @@ public class MotherlodeMineXSettings {
         this.wearProspectorEquipment = wearProspectorEquipment;
     }
 
-    public boolean isGemBag() {
-        return gemBag;
+    public boolean isUseGemBag() {
+        return useGemBag;
     }
 
-    public void setGemBag(boolean gemBag) {
-        this.gemBag = gemBag;
+    public void setUseGemBag(boolean useGemBag) {
+        this.useGemBag = useGemBag;
     }
 
-    public boolean isCoalBag() {
-        return coalBag;
+    public boolean isUseCoalBag() {
+        return useCoalBag;
     }
 
-    public void setCoalBag(boolean coalBag) {
-        this.coalBag = coalBag;
+    public void setUseCoalBag(boolean useCoalBag) {
+        this.useCoalBag = useCoalBag;
     }
 
     public boolean isWorldHop() {
@@ -233,6 +137,14 @@ public class MotherlodeMineXSettings {
         this.worldHopRandom = worldHopRandom;
     }
 
+    public double getWorldHopFactor() {
+        return worldHopFactor;
+    }
+
+    public void setWorldHopFactor(double worldHopFactor) {
+        this.worldHopFactor = worldHopFactor;
+    }
+
     public Workable.PickAxe getDesiredPickaxe() {
         return desiredPickaxe;
     }
@@ -241,4 +153,42 @@ public class MotherlodeMineXSettings {
         this.desiredPickaxe = desiredPickaxe;
     }
 
+    public List<MotherlodeMine> getMotherlodeWork() {
+        return motherlodeWork;
+    }
+
+    public void setMotherlodeWork(List<MotherlodeMine> motherlodeWork) {
+        this.motherlodeWork = motherlodeWork;
+    }
+
+    public List<Mining> getMiningWork() {
+        return miningWork;
+    }
+
+    public void setMiningWork(List<Mining> miningWork) {
+        this.miningWork = miningWork;
+    }
+
+    @Override
+    public String toString() {
+        return "MotherlodeMineXSettings{" +
+                "repeat=" + repeat +
+                ", repeatShuffle=" + repeatShuffle +
+                ", doNotRepeat=" + doNotRepeat +
+                ", antiBanSeed='" + antiBanSeed + '\'' +
+                ", useAntiBanSeed=" + useAntiBanSeed +
+                ", fatigue=" + fatigue +
+                ", microSleep=" + microSleep +
+                ", doNotUpgrade=" + doNotUpgrade +
+                ", wearProspectorEquipment=" + wearProspectorEquipment +
+                ", useGemBag=" + useGemBag +
+                ", useCoalBag=" + useCoalBag +
+                ", worldHop=" + worldHop +
+                ", worldHopRandom=" + worldHopRandom +
+                ", worldHopFactor=" + worldHopFactor +
+                ", desiredPickaxe=" + desiredPickaxe +
+                ", motherlodeWork=" + motherlodeWork +
+                ", miningWork=" + miningWork +
+                '}';
+    }
 }

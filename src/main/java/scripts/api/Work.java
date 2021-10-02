@@ -2,64 +2,58 @@ package scripts.api;
 
 import dax.api_lib.models.RunescapeBank;
 import org.tribot.script.sdk.Skill;
-import scripts.api.interfaces.Executable;
-import scripts.api.interfaces.Nodeable;
 import scripts.api.interfaces.Validatable;
 
-import java.util.List;
+import java.io.Serializable;
 
-public abstract class Work implements Validatable, Executable {
+public abstract class Work implements Validatable, Serializable {
 
-    private List<Nodeable> nodes;
+    private Resource resource;
+    private ResourceLocation resourceLocation;
+    private ResourceOption resourceOption;
 
-    private String resourceName;
-    private String resourceLocation;
-    private String resourceOption;
-
-    private int untilLevel;
-    private TimeElapse timer;
+    private int level;
+    private TimeElapse time;
     private RunescapeBank bankLocation;
-    private ResourceLocation actualResourceLocation;
 
-    public Work(String resourceName, String resourceLocation, String resourceOption, int untilLevel, TimeElapse timer, RunescapeBank bankLocation, ResourceLocation actualResourceLocation) {
-        this.resourceName = resourceName;
+    public Work(Resource resource, ResourceLocation resourceLocation, ResourceOption resourceOption, int level, TimeElapse time) {
+        this.resource = resource;
         this.resourceLocation = resourceLocation;
         this.resourceOption = resourceOption;
-        this.untilLevel = untilLevel;
-        this.timer = timer;
-        this.bankLocation = bankLocation;
-        this.actualResourceLocation = actualResourceLocation;
-        initializeNodes();
+        this.level = level;
+        this.time = time;
+        completeState(this.resourceLocation);
     }
 
-    public Work(String resourceName, String resourceLocation, String resourceOption, TimeElapse timer, RunescapeBank bankLocation, ResourceLocation actualResourceLocation) {
-        this.resourceName = resourceName;
+    public Work(Resource resource, ResourceLocation resourceLocation, ResourceOption resourceOption, int level) {
+        this.resource = resource;
         this.resourceLocation = resourceLocation;
         this.resourceOption = resourceOption;
-        this.timer = timer;
-        this.bankLocation = bankLocation;
-        this.actualResourceLocation = actualResourceLocation;
-        initializeNodes();
+        this.level = level;
+        completeState(this.resourceLocation);
     }
 
-    public Work(String resourceName, String resourceLocation, String resourceOption, int untilLevel, RunescapeBank bankLocation, ResourceLocation actualResourceLocation) {
-        this.resourceName = resourceName;
+    public Work(Resource resource, ResourceLocation resourceLocation, ResourceOption resourceOption, TimeElapse time) {
+        this.resource = resource;
         this.resourceLocation = resourceLocation;
         this.resourceOption = resourceOption;
-        this.untilLevel = untilLevel;
-        this.bankLocation = bankLocation;
-        this.actualResourceLocation = actualResourceLocation;
-        initializeNodes();
+        this.time = time;
+        completeState(this.resourceLocation);
     }
 
-    public Work() {
-        initializeNodes();
+    public Work(Resource resource, ResourceLocation resourceLocation, ResourceOption resourceOption) {
+        this.resource = resource;
+        this.resourceLocation = resourceLocation;
+        this.resourceOption = resourceOption;
+        completeState(this.resourceLocation);
     }
+
+    public Work() {}
 
     /**
-     * Critical method for setting up the nodes for the given work (constructor)
+     * Critical method for setting complete state for constructor
      */
-    public abstract void initializeNodes();
+    public abstract void completeState(ResourceLocation resourceLocation);
 
     /**
      * Validate the work given - if the worker's level hasn't been reached
@@ -75,78 +69,57 @@ public abstract class Work implements Validatable, Executable {
         return reachedLevel() || reachedTime();
     }
 
-    /**
-     * Execute the node for the given work specified
-     */
-    @Override
-    public void execute() {
-        if (getNodes() != null) {
-            getNodes().stream()
-                    .filter(Nodeable::validate)
-                    .findFirst()
-                    .ifPresent(Nodeable::execute);
-        }
-    }
-
     public boolean reachedLevel() {
         // return if worker mining level is greater than the desired level
-        if (getUntilLevel() <= 0 || getUntilLevel() >= 99) {
+        if (getLevel() <= 0 || getLevel() > 99) {
             return false;
         }
-        return Skill.MINING.getActualLevel() >= getUntilLevel();
+        return Skill.MINING.getActualLevel() >= getLevel();
     }
 
     public boolean reachedTime() {
         // return true if worker timer has surpassed desired time
-        return getTimer() != null && getTimer().validate();
+        return getTime() != null && getTime().validate();
     }
 
-    public List<Nodeable> getNodes() {
-        return nodes;
+    public Resource getResource() {
+        return resource;
     }
 
-    public void setNodes(List<Nodeable> nodes) {
-        this.nodes = nodes;
+    public void setResource(Resource resource) {
+        this.resource = resource;
     }
 
-    public String getResourceName() {
-        return resourceName;
-    }
-
-    public void setResourceName(String resourceName) {
-        this.resourceName = resourceName;
-    }
-
-    public String getResourceLocation() {
+    public ResourceLocation getResourceLocation() {
         return resourceLocation;
     }
 
-    public void setResourceLocation(String resourceLocation) {
+    public void setResourceLocation(ResourceLocation resourceLocation) {
         this.resourceLocation = resourceLocation;
     }
 
-    public String getResourceOption() {
+    public ResourceOption getResourceOption() {
         return resourceOption;
     }
 
-    public void setResourceOption(String resourceOption) {
+    public void setResourceOption(ResourceOption resourceOption) {
         this.resourceOption = resourceOption;
     }
 
-    public int getUntilLevel() {
-        return untilLevel;
+    public int getLevel() {
+        return level;
     }
 
-    public void setUntilLevel(int untilLevel) {
-        this.untilLevel = untilLevel;
+    public void setLevel(int level) {
+        this.level = level;
     }
 
-    public TimeElapse getTimer() {
-        return timer;
+    public TimeElapse getTime() {
+        return time;
     }
 
-    public void setTimer(TimeElapse timer) {
-        this.timer = timer;
+    public void setTime(TimeElapse time) {
+        this.time = time;
     }
 
     public RunescapeBank getBankLocation() {
@@ -157,24 +130,15 @@ public abstract class Work implements Validatable, Executable {
         this.bankLocation = bankLocation;
     }
 
-    public ResourceLocation getActualResourceLocation() {
-        return actualResourceLocation;
-    }
-
-    public void setActualResourceLocation(ResourceLocation actualResourceLocation) {
-        this.actualResourceLocation = actualResourceLocation;
-    }
-
     @Override
     public String toString() {
         return "Work{" +
-                "resourceName='" + resourceName + '\'' +
-                ", resourceLocation='" + resourceLocation + '\'' +
-                ", resourceOption='" + resourceOption + '\'' +
-                ", untilLevel=" + untilLevel +
-                ", timer=" + timer +
+                "resource=" + resource +
+                ", resourceLocation=" + resourceLocation +
+                ", resourceOption=" + resourceOption +
+                ", level=" + level +
+                ", time=" + time +
                 ", bankLocation=" + bankLocation +
-                ", actualResourceLocation=" + actualResourceLocation +
                 '}';
     }
 }

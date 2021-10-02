@@ -7,9 +7,11 @@ import org.tribot.script.sdk.types.Area;
 import org.tribot.script.sdk.types.GameObject;
 import org.tribot.script.sdk.types.InventoryItem;
 import scripts.MotherlodeMineX;
+import scripts.MotherlodeMineXVariables;
 import scripts.api.PayDirt;
 import scripts.api.Work;
 import scripts.api.Worker;
+import scripts.api.antiban.AntiBan;
 import scripts.api.interfaces.Nodeable;
 import scripts.api.interfaces.Workable;
 
@@ -29,6 +31,9 @@ public class SearchCrateForHammer implements Nodeable, Workable {
 
     @Override
     public void execute() {
+        MotherlodeMineXVariables vars = MotherlodeMineXVariables.get();
+        int sleepTime = AntiBan.sleep(vars.getWaitTimes());
+
         log("Searching crate for a hammer");
 
         boolean clickResult = false;
@@ -103,7 +108,7 @@ public class SearchCrateForHammer implements Nodeable, Workable {
 
     private boolean shouldFetchHammer() {
         if (isAtHammerCrate()) {
-            if (workerHasMotherlodeEquipment(MotherlodeMineX.getSettings())) {
+            if (workerHasMotherlodeEquipment(MotherlodeMineXVariables.get().getSettings())) {
                 if (workerHasOptimalPickaxe(Worker.getInstance().getPickaxe())) {
                     if (!payDirtSackIsFull() && !payDirtSackAlmostFull(PayDirt.getFuturePayDirtSackCount())) {
                         return !inventoryContainsHammer();

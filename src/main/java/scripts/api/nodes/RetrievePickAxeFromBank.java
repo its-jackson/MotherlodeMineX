@@ -9,8 +9,10 @@ import org.tribot.script.sdk.Waiting;
 import org.tribot.script.sdk.tasks.BankTask;
 
 import scripts.MotherlodeMineX;
+import scripts.MotherlodeMineXVariables;
 import scripts.api.Work;
 import scripts.api.Worker;
+import scripts.api.antiban.AntiBan;
 import scripts.api.interfaces.Nodeable;
 import scripts.api.interfaces.Workable;
 
@@ -34,6 +36,9 @@ public class RetrievePickAxeFromBank implements Nodeable, Workable {
 
     @Override
     public void execute() {
+        MotherlodeMineXVariables vars = MotherlodeMineXVariables.get();
+        int sleepTime = AntiBan.sleep(vars.getWaitTimes());
+
         log("Retrieving pickaxe");
         // open the bank
         if (!Bank.isOpen()) {
@@ -44,7 +49,7 @@ public class RetrievePickAxeFromBank implements Nodeable, Workable {
             // deposit all items
             depositAllMotherlodeMine(Worker.getInstance().getPickaxe());
             // calculate optimal pickaxe
-            if (!MotherlodeMineX.getSettings().isDoNotUpgrade()) {
+            if (!MotherlodeMineXVariables.get().getSettings().isDoNotUpgrade()) {
                 Workable.calculateOptimalPickAxeInBank(
                                 Worker.getInstance()
                                         .getActualMiningLevel())

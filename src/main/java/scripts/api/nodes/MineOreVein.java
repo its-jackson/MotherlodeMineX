@@ -40,9 +40,10 @@ public class MineOreVein implements Nodeable, Workable {
     @Override
     public void execute() {
         // sleep before executing
-        int sleepTime = AntiBan.sleep(MotherlodeMineXVariables.get().getWaitTimes(), true);
+        MotherlodeMineXVariables vars = MotherlodeMineXVariables.get();
+        int sleepTime = AntiBan.sleep(vars.getWaitTimes());
 
-        ResourceLocation location = getWork().getActualResourceLocation();
+        ResourceLocation location = getWork().getResourceLocation();
 
         // open up the gem bag before mining
         boolean openGemBagResult = openGemBag();
@@ -63,7 +64,7 @@ public class MineOreVein implements Nodeable, Workable {
         // set the ore vein to be mined based on actual work location
         if (location.equals(ResourceLocation.MOTHERLODE_MINE_UPPER_LEVEL)) {
             Query.gameObjects()
-                    .nameEquals(getWork().getResourceName())
+                    .nameEquals(getWork().getResource().getResource())
                     .filter(gameObject -> {
                         WorldTile worldTile = gameObject.getTile();
                         int x = worldTile.getX();
@@ -97,14 +98,14 @@ public class MineOreVein implements Nodeable, Workable {
                     .ifPresent(this::setCurrentOreVein);
         } else {
             Query.gameObjects()
-                    .nameEquals(getWork().getResourceName())
+                    .nameEquals(getWork().getResource().getResource())
                     .filter(gameObject -> {
                         WorldTile worldTile = gameObject.getTile();
                         int x = worldTile.getX();
                         int y = worldTile.getY();
                         int plane = worldTile.getPlane();
                         ArrayList<WorldTile> workTiles = getWork()
-                                .getActualResourceLocation()
+                                .getResourceLocation()
                                 .getArea()
                                 .getWorldTiles();
                         // validate lower level tiles
@@ -120,7 +121,6 @@ public class MineOreVein implements Nodeable, Workable {
         }
 
         if (getCurrentOreVein() != null) {
-            MotherlodeMineX.setCurrentOreVein(getCurrentOreVein());
             log(State.LOCATING_ORE_VEIN_SUCCESS.getState());
             // clear rockfall if in the way of mining ore vein
             // perform special attack if able before mining
@@ -143,7 +143,6 @@ public class MineOreVein implements Nodeable, Workable {
             // failed to locate game object
         }
         // destroy the game object
-        MotherlodeMineX.setCurrentOreVein(null);
         // Generate the trackers
         AntiBan.generateTrackers((int) (System.currentTimeMillis() - this.start_time), false);
     }
@@ -192,7 +191,7 @@ public class MineOreVein implements Nodeable, Workable {
 
     private boolean shouldMineOreVein() {
         if (!Inventory.isFull()) {
-            if (workerHasMotherlodeEquipment(MotherlodeMineX.getSettings())) {
+            if (workerHasMotherlodeEquipment(MotherlodeMineXVariables.get().getSettings())) {
                 if (workerHasOptimalPickaxe(Worker.getInstance().getPickaxe())) {
                     if (inventoryContainsHammer()) {
                         if (workerIsInLocation(getWork())) {

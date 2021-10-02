@@ -1,4 +1,4 @@
-package scripts;
+package scripts.api;
 
 import org.tribot.script.sdk.painting.MousePaint;
 

@@ -3,13 +3,12 @@ package scripts.api.nodes;
 import org.tribot.script.sdk.Bank;
 import org.tribot.script.sdk.Inventory;
 import org.tribot.script.sdk.Waiting;
-import org.tribot.script.sdk.interfaces.Item;
+import scripts.MotherlodeMineXVariables;
 import scripts.api.Work;
 import scripts.api.Worker;
+import scripts.api.antiban.AntiBan;
 import scripts.api.interfaces.Nodeable;
 import scripts.api.interfaces.Workable;
-
-import java.util.Optional;
 
 public class Banking implements Nodeable, Workable {
 
@@ -23,18 +22,27 @@ public class Banking implements Nodeable, Workable {
 
     @Override
     public void execute() {
+        int sleepTime = AntiBan.sleep(MotherlodeMineXVariables.get().getWaitTimes());
+
         log("Depositing inventory");
 
         boolean bankingResult = false;
 
         // open bank
-        if (Bank.open()) {
+        if (!Bank.isOpen()) { {
+            Bank.open();
+        }
             // check if open
             if (Bank.isOpen()) {
                 // deposit all except
                 depositAllMotherlodeMine(Worker.getInstance().getPickaxe());
                 // wait until not full
                 bankingResult = Waiting.waitUntil(() -> !Inventory.isFull());
+                // upgrade pick axe
+                UpgradePickaxeFromBank upgrade = new UpgradePickaxeFromBank(getWork());
+                if (upgrade.validate()) {
+                    upgrade.execute();
+                }
             }
         }
 
@@ -42,12 +50,6 @@ public class Banking implements Nodeable, Workable {
             log("Inventory deposited successful");
         } else {
             log("Inventory deposited unsuccessful");
-        }
-
-        // upgrade pick axe
-        UpgradePickaxeFromBank upgrade = new UpgradePickaxeFromBank(getWork());
-        if (upgrade.validate()) {
-            upgrade.execute();
         }
     }
 

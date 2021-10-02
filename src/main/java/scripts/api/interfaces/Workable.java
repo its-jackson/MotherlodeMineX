@@ -222,12 +222,12 @@ public interface Workable {
     }
 
     default boolean workerHasMotherlodeEquipment(MotherlodeMineXSettings settings) {
-        if (settings.isGemBag()) {
+        if (settings.isUseGemBag()) {
             if (!inventoryContainsGemBag()) {
                 return false;
             }
         }
-        if (settings.isCoalBag()) {
+        if (settings.isUseCoalBag()) {
             if (!inventoryContainsCoalBag()) {
                 return false;
             }
@@ -249,7 +249,7 @@ public interface Workable {
      * @return True if the worker is in the resource location; false otherwise
      */
     default boolean workerIsInLocation(Work work) {
-        return work.getActualResourceLocation()
+        return work.getResourceLocation()
                 .getArea()
                 .containsMyPlayer();
     }

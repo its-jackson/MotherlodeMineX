@@ -5,9 +5,11 @@ import org.tribot.script.sdk.Waiting;
 import org.tribot.script.sdk.interfaces.Item;
 import org.tribot.script.sdk.query.Query;
 import org.tribot.script.sdk.types.GameObject;
+import scripts.MotherlodeMineXVariables;
 import scripts.api.PayDirt;
 import scripts.api.Work;
 import scripts.api.Worker;
+import scripts.api.antiban.AntiBan;
 import scripts.api.interfaces.Nodeable;
 import scripts.api.interfaces.Workable;
 
@@ -38,7 +40,7 @@ public class DepletePayDirtSack implements Nodeable, Workable {
         // keeping looping until sack is fully depleted
         while (payDirtSackCount() > 0 || inventoryContainsOre()) {
             // wait in between each iteration
-            Waiting.waitUniform(1500, 2000);
+            int sleepTime = AntiBan.sleep(MotherlodeMineXVariables.get().getWaitTimes());
 
             boolean clickResult = false;
 

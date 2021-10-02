@@ -3,7 +3,9 @@ package scripts.api.nodes;
 import org.tribot.script.sdk.Waiting;
 import org.tribot.script.sdk.query.Query;
 import org.tribot.script.sdk.types.GameObject;
+import scripts.MotherlodeMineXVariables;
 import scripts.api.Work;
+import scripts.api.antiban.AntiBan;
 import scripts.api.interfaces.Nodeable;
 import scripts.api.interfaces.Workable;
 
@@ -21,6 +23,8 @@ public class RepairBrokenStrut implements Nodeable, Workable {
 
     @Override
     public void execute() {
+        MotherlodeMineXVariables vars = MotherlodeMineXVariables.get();
+        int sleepTime = AntiBan.sleep(vars.getWaitTimes());
         boolean waitResult = false;
 
         // find random broken strut

@@ -26,19 +26,13 @@ public class TimeElapse implements Validatable {
     private long minute;
     private long second;
 
-    private TimeElapse() {
-    }
+    private TimeElapse() {}
 
     public TimeElapse(String condition) {
         this.condition = condition;
 
-        if (this.condition != null
-                && !this.condition.isBlank()
-                && !this.condition.isEmpty()
-                && this.condition.matches("\\d\\d:\\d\\d:\\d\\d:\\d\\d")) {
-
+        if (this.condition != null && this.condition.matches("\\d\\d:\\d\\d:\\d\\d:\\d\\d")) {
             final String[] split = this.condition.split(":");
-
             if (split.length > 0) {
                 this.day = Integer.parseInt(split[0], 10);
                 this.hour = Integer.parseInt(split[1], 10);
@@ -53,28 +47,51 @@ public class TimeElapse implements Validatable {
             }
         } else {
             this.duration = Duration.ZERO;
-            System.out.println("Incorrect time elapsed format: DAYS:HOURS:MINUTES:SECONDS - 00:00:00:00");
+            System.out.println("Incorrect time format - DAYS:HOURS:MINUTES:SECONDS - 00:00:00:00");
         }
     }
 
     public static TimeElapse generateRandomTimer() {
         SecureRandom secureRandom = new SecureRandom();
 
-        long day = Duration.ofDays(secureRandom.nextInt(24)).toMillis();
-        long hour = Duration.ofDays(secureRandom.nextInt(24)).toMillis();
-        long minute = Duration.ofMinutes(secureRandom.nextInt(24)).toMillis();
-        long second = Duration.ofSeconds(secureRandom.nextInt(100)).toMillis();
+        long day = secureRandom.nextInt(24);
+        long hour = secureRandom.nextInt(24);
+        long minute = secureRandom.nextInt(24);
+        long second = secureRandom.nextInt(100);
 
-        Duration duration = Duration.of(day + hour + minute + second, ChronoUnit.MILLIS);
+        Duration duration = Duration.of(
+                Duration.ofDays(day).toMillis() +
+                        Duration.ofHours(hour).toMillis() +
+                        Duration.ofMinutes(minute).toMillis() +
+                        Duration.ofSeconds(second).toMillis(), ChronoUnit.MILLIS);
 
         TimeElapse timer = new TimeElapse();
 
         StringJoiner stringJoinerCondition = new StringJoiner(":");
 
-        stringJoinerCondition.add(Long.toString(day, 10))
-                .add(Long.toString(hour, 10))
-                .add(Long.toString(minute, 10))
-                .add(Long.toString(second, 10));
+        if (day < 10) {
+            stringJoinerCondition.add("0" + day);
+        } else {
+            stringJoinerCondition.add(Long.toString(day, 10));
+        }
+
+        if (hour < 10) {
+            stringJoinerCondition.add("0" + hour);
+        } else {
+            stringJoinerCondition.add(Long.toString(hour, 10));
+        }
+
+        if (minute < 10) {
+            stringJoinerCondition.add("0" + minute);
+        } else {
+            stringJoinerCondition.add(Long.toString(minute, 10));
+        }
+
+        if (second < 10) {
+            stringJoinerCondition.add("0" + second);
+        } else {
+            stringJoinerCondition.add(Long.toString(second, 10));
+        }
 
         timer.setDuration(duration);
         timer.setCondition(stringJoinerCondition.toString());
