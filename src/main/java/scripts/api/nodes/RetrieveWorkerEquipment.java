@@ -31,7 +31,9 @@ public class RetrieveWorkerEquipment implements Nodeable, Workable {
         log("Retrieving equipment");
 
         if (!Bank.isOpen()) {
-            Bank.open();
+            if (!Bank.open()) {
+                walkToBank(getWork().getBankLocation());
+            }
         }
         if (Bank.isOpen()) {
             depositAllMotherlodeMine(Worker.getInstance().getPickaxe());
@@ -66,6 +68,8 @@ public class RetrieveWorkerEquipment implements Nodeable, Workable {
         // is at bank
         if (isAtBank(getWork().getBankLocation())) {
             if (workerHasOptimalPickaxe(Worker.getInstance().getPickaxe())) {
+                // worker doesnt have the required items on their player
+                // and worker bank
                 return !workerHasMotherlodeEquipment(MotherlodeMineXVariables.get().getSettings());
             }
         }

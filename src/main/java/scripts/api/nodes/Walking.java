@@ -46,18 +46,9 @@ public class Walking implements Nodeable, Workable {
         if (isWalkToHopper()) {
             // walk to hopper
             log("Walking to hopper");
-            if (getWork().getResourceLocation().equals(ResourceLocation.MOTHERLODE_MINE_UPPER_LEVEL)) {
-                if (getWork().getResourceLocation().getArea().containsMyPlayer()) {
-                    //walkResult = climbMotherlodeMineLadderInside();
-                    if (!climbMotherlodeMineLadderInside()) {
-                        walkResult = walkToTile(LADDER_UPPER_WALK_TILE);
-                    }
-//                        walkResult = walkToTile(LADDER_UPPER_WALK_TILE);
-//                        if (walkResult) {
-//                            walkResult = climbMotherlodeMineLadderInside();
-//                        }
-                } else {
-                    walkResult = walkToTile(HOPPER_TILE);
+            if (ResourceLocation.MOTHERLODE_MINE_UPPER_LEVEL.getArea().containsMyPlayer()) {
+                if (!climbMotherlodeMineLadderInside()) {
+                    walkResult = walkToTile(LADDER_UPPER_WALK_TILE);
                 }
             } else {
                 walkResult = walkToTile(HOPPER_TILE);
@@ -68,8 +59,8 @@ public class Walking implements Nodeable, Workable {
             log("Walking to ore vein");
             if (getWork().getResourceLocation().equals(ResourceLocation.MOTHERLODE_MINE_UPPER_LEVEL)) {
                 walkResult = walkToMotherlodeMineUpperLevelOutside();
-                if (walkResult) {
-                    Waiting.waitUniform(3000, 5000);
+                boolean inLocationResult = Waiting.waitUntil(4000, () -> getWork().getResourceLocation().getArea().containsMyPlayer());
+                if (inLocationResult) {
                     walkResult = walkToTile(getWork().getResourceLocation().getArea().getRandomTile());
                 }
             } else {
@@ -84,7 +75,13 @@ public class Walking implements Nodeable, Workable {
         } else if (isWalkToBank()) {
             // walk to the bank
             log("Walking to bank");
-            walkResult = walkToBank(getWork().getBankLocation());
+            if (ResourceLocation.MOTHERLODE_MINE_UPPER_LEVEL.getArea().containsMyPlayer()) {
+                if (!climbMotherlodeMineLadderInside()) {
+                    walkResult = walkToTile(LADDER_UPPER_WALK_TILE);
+                }
+            } else {
+                walkResult = walkToBank(getWork().getBankLocation());
+            }
             setWalkToBank(false);
         } else if (isWalkToPayDirtSack()) {
             // walk to payDirtSack
@@ -94,17 +91,35 @@ public class Walking implements Nodeable, Workable {
         } else if (isWalkToHammerCrate()) {
             // walk to hammer crate
             log("Walking to hammer crate");
-            walkResult = walkToTile(CRATE_TILE_NORTH);
+            if (ResourceLocation.MOTHERLODE_MINE_UPPER_LEVEL.getArea().containsMyPlayer()) {
+                if (!climbMotherlodeMineLadderInside()) {
+                    walkResult = walkToTile(LADDER_UPPER_WALK_TILE);
+                }
+            } else {
+                walkResult = walkToTile(CRATE_TILE_NORTH);
+            }
             setWalkToHammerCrate(false);
         } else if (isWalkToBankRetrievePickAxe()) {
             // walk to bank retrieve pickaxe
             log("Walking to bank - retrieving pickaxe");
-            walkResult = walkToBank();
+            if (ResourceLocation.MOTHERLODE_MINE_UPPER_LEVEL.getArea().containsMyPlayer()) {
+                if (!climbMotherlodeMineLadderInside()) {
+                    walkResult = walkToTile(LADDER_UPPER_WALK_TILE);
+                }
+            } else {
+                walkResult = walkToBank();
+            }
             setWalkToBankRetrievePickAxe(false);
         } else if (isWalkToBankRetrieveEquipment()) {
             // walk to bank upgrade pickaxe
             log("Walking to bank - retrieving equipment");
-            walkResult = walkToBank(getWork().getBankLocation());
+            if (ResourceLocation.MOTHERLODE_MINE_UPPER_LEVEL.getArea().containsMyPlayer()) {
+                if (!climbMotherlodeMineLadderInside()) {
+                    walkResult = walkToTile(LADDER_UPPER_WALK_TILE);
+                }
+            } else {
+                walkResult = walkToBank(getWork().getBankLocation());
+            }
             setWalkToBankRetrieveEquipment(false);
         }
 
@@ -156,7 +171,7 @@ public class Walking implements Nodeable, Workable {
     // inventory is not full
     // pay-dirt sack is not full
     private boolean shouldWalkToOreVeins() {
-        if (!Inventory.isFull()) {
+        if (!inventoryFullPayDirt()) {
             if (workerHasOptimalPickaxe(Worker.getInstance().getPickaxe())) {
                 if (workerHasMotherlodeEquipment(MotherlodeMineXVariables.get().getSettings())) {
                     if (!workerIsInLocation(getWork())) {
@@ -281,23 +296,6 @@ public class Walking implements Nodeable, Workable {
                     setWalkToBankRetrieveEquipment(true);
                     return isWalkToBankRetrieveEquipment();
                 }
-//                if (settings.isGemBag()) {
-//                    if (!inventoryContainsGemBag()) {
-//
-//                    }
-//                }
-//                if (settings.isCoalBag()) {
-//                    if (!inventoryContainsCoalBag()) {
-//                        setWalkToBankRetrieveEquipment(true);
-//                        return isWalkToBankRetrieveEquipment();
-//                    }
-//                }
-//                if (settings.isWearProspectorEquipment()) {
-//                    if (!workerHasFullProspectorEquipped()) {
-//                        setWalkToBankRetrieveEquipment(true);
-//                        return isWalkToBankRetrieveEquipment();
-//                    }
-//                }
             }
         }
         return false;

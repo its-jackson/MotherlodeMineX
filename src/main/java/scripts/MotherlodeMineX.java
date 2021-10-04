@@ -34,6 +34,10 @@ import java.util.Locale;
  * 3) Different type of work (generic mining)
  */
 
+/*
+ Version 1.00
+ */
+
 @TribotScriptManifest(
         name = "Motherlode Mine X",
         author = "Polymorphic",
@@ -111,6 +115,7 @@ public class MotherlodeMineX implements TribotScript {
             // statistics primary
             //g2d.setFont(getVariables().getMainFont());
             graphics.setFont(MotherlodeMineXVariables.get().getSecondaryFont());
+            graphics.drawString("Version: 1.00", 10, 100); // runtime
             graphics.drawString("Time Running:", 15, 370); // runtime
             graphics.drawString("Profit:", 15, 385); // state
             //
@@ -212,6 +217,7 @@ public class MotherlodeMineX implements TribotScript {
                             nodes.add(new DepletePayDirtSack(work));
                             nodes.add(new RetrievePickAxeFromBank(work));
                             nodes.add(new RetrieveWorkerEquipment(work));
+                            nodes.add(new WorldHop(work));
                         }
                         // loop while the work is validated (reached time or level)
                         while (!work.validate()) {

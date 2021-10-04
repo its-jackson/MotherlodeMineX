@@ -11,6 +11,7 @@ import org.tribot.script.sdk.types.*;
 import org.tribot.script.sdk.walking.GlobalWalking;
 import org.tribot.script.sdk.walking.WalkState;
 import scripts.MotherlodeMineXSettings;
+import scripts.api.ResourceLocation;
 import scripts.api.Work;
 import scripts.api.antiban.AntiBan;
 
@@ -280,6 +281,13 @@ public interface Workable {
         return resource.interact(actions.get(0));
     }
 
+    default boolean inventoryIsReadyMotherlode(PickAxe pickAxe) {
+       return Query.inventory()
+                .idNotEquals(GEM_BAG, COAL_BAG, GEM_BAG_OPEN, COAL_BAG, HAMMER)
+                .count() == 0
+                ;
+    }
+
     default boolean inventoryFullOre() {
         return Inventory.isFull() && Inventory.contains(inventoryItem -> inventoryItem.getName().contains("ore")
                 || inventoryItem.getName().equals("Coal"));
@@ -437,9 +445,9 @@ public interface Workable {
 
     default boolean isAtMotherlodeMineHopper() {
         return Query.gameObjects()
-                .maxDistance(3)
+                .maxDistance(7.00)
                 .idEquals(HOPPER_ID)
-                .isAny();
+                .isAny() && !ResourceLocation.MOTHERLODE_MINE_UPPER_LEVEL.getArea().containsMyPlayer();
     }
 
     default boolean isAtBrokenStruts() {
@@ -487,9 +495,9 @@ public interface Workable {
      */
     default int depositAllMotherlodeMine(PickAxe pickaxe) {
         if (pickaxe != null) {
-            return Banking.depositAllExcept(GEM_BAG, GEM_BAG_OPEN, COAL_BAG, HAMMER, pickaxe.getPickAxeId());
+            return Banking.depositAllExcept(GEM_BAG, GEM_BAG_OPEN, COAL_BAG, COAL_BAG_OPEN, HAMMER, pickaxe.getPickAxeId());
         } else {
-            return Banking.depositAllExcept(GEM_BAG, GEM_BAG_OPEN, COAL_BAG, HAMMER);
+            return Banking.depositAllExcept(GEM_BAG, GEM_BAG_OPEN, COAL_BAG, COAL_BAG_OPEN, HAMMER);
         }
     }
 

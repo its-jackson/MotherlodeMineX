@@ -204,6 +204,10 @@ public class Controller implements Initializable {
 
     @FXML
     @DoNotRename
+    private Label labelHandToolHelp;
+
+    @FXML
+    @DoNotRename
     private CheckBox checkBoxWearProspector;
 
     @FXML
@@ -217,6 +221,10 @@ public class Controller implements Initializable {
     @FXML
     @DoNotRename
     private Label labelMotherlodeControl;
+
+    @FXML
+    @DoNotRename
+    private Label labelMotherlodeHelp;
 
     @FXML
     @DoNotRename
@@ -249,6 +257,10 @@ public class Controller implements Initializable {
     @FXML
     @DoNotRename
     private CheckBox checkBoxRandomWorldHop;
+
+    @FXML
+    @DoNotRename
+    private Label labelWorldControlPlayerCount;
 
     @FXML
     @DoNotRename
@@ -1432,6 +1444,42 @@ public class Controller implements Initializable {
     @DoNotRename
     public void setCheckBoxWorldHopPlayerCount(CheckBox checkBoxWorldHopPlayerCount) {
         this.checkBoxWorldHopPlayerCount = checkBoxWorldHopPlayerCount;
+    }
+
+    @FXML
+    @DoNotRename
+    public Label getLabelWorldControlPlayerCount() {
+        return labelWorldControlPlayerCount;
+    }
+
+    @FXML
+    @DoNotRename
+    public void setLabelWorldControlPlayerCount(Label labelWorldControlPlayerCount) {
+        this.labelWorldControlPlayerCount = labelWorldControlPlayerCount;
+    }
+
+    @FXML
+    @DoNotRename
+    public Label getLabelHandToolHelp() {
+        return labelHandToolHelp;
+    }
+
+    @FXML
+    @DoNotRename
+    public void setLabelHandToolHelp(Label labelHandToolHelp) {
+        this.labelHandToolHelp = labelHandToolHelp;
+    }
+
+    @FXML
+    @DoNotRename
+    public Label getLabelMotherlodeHelp() {
+        return labelMotherlodeHelp;
+    }
+
+    @FXML
+    @DoNotRename
+    public void setLabelMotherlodeHelp(Label labelMotherlodeHelp) {
+        this.labelMotherlodeHelp = labelMotherlodeHelp;
     }
 
     @FXML

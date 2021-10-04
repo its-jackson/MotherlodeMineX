@@ -6,7 +6,6 @@ import org.tribot.script.sdk.*;
 import org.tribot.script.sdk.query.Query;
 import org.tribot.script.sdk.types.GameObject;
 import org.tribot.script.sdk.types.WorldTile;
-import scripts.MotherlodeMineX;
 import scripts.MotherlodeMineXVariables;
 import scripts.api.ResourceLocation;
 import scripts.api.Worker;
@@ -24,6 +23,7 @@ public class MineOreVein implements Nodeable, Workable {
     private Work work;
     private GameObject currentOreVein;
     private UpgradePickaxeFromBank upgradePickAxe;
+    private WorldHop worldHop;
 
     public MineOreVein(Work work, UpgradePickaxeFromBank upgradePickAxe) {
         this.work = work;
@@ -44,6 +44,8 @@ public class MineOreVein implements Nodeable, Workable {
         int sleepTime = AntiBan.sleep(vars.getWaitTimes());
 
         ResourceLocation location = getWork().getResourceLocation();
+
+        // equip optimal pickaxe before mining
 
         // open up the gem bag before mining
         boolean openGemBagResult = openGemBag();
@@ -166,6 +168,14 @@ public class MineOreVein implements Nodeable, Workable {
     private void completeMiningTask() {
         int timeOut = 0;
 
+         // set world hop node
+        MotherlodeMineXVariables.get()
+                .getNodes()
+                .stream()
+                .filter(node -> node instanceof WorldHop)
+                .findFirst()
+                .ifPresent(node -> setWorldHop((WorldHop) node));
+
         while (timeOut < 15) {
             Waiting.waitUniform(1500, 2500);
             log(State.MINING_ORE_VEIN.getState());
@@ -176,21 +186,24 @@ public class MineOreVein implements Nodeable, Workable {
                     break;
                 }
             }
+            // world hop
+            if (getWorldHop() != null && getWorldHop().validate()) {
+                getWorldHop().execute();
+            }
+            Waiting.waitUniform(100, 300);
             // do special attack if able
             boolean specialAttackResult = performSpecialAttack();
             Waiting.waitUniform(100, 300);
             // reset game tab if not open
             boolean gameTabResult = resetGameTab();
             Waiting.waitUniform(100, 300);
-            // upgrade axe
-            //Waiting.waitUniform(100, 300);
             // perform AntiBan
             AntiBan.checkAntiBanTask(getCurrentOreVein());
         }
     }
 
     private boolean shouldMineOreVein() {
-        if (!Inventory.isFull()) {
+        if (!inventoryFullPayDirt()) {
             if (workerHasMotherlodeEquipment(MotherlodeMineXVariables.get().getSettings())) {
                 if (workerHasOptimalPickaxe(Worker.getInstance().getPickaxe())) {
                     if (inventoryContainsHammer()) {
@@ -226,5 +239,13 @@ public class MineOreVein implements Nodeable, Workable {
 
     public void setUpgradePickAxe(UpgradePickaxeFromBank upgradePickAxe) {
         this.upgradePickAxe = upgradePickAxe;
+    }
+
+    public WorldHop getWorldHop() {
+        return worldHop;
+    }
+
+    public void setWorldHop(WorldHop worldHop) {
+        this.worldHop = worldHop;
     }
 }

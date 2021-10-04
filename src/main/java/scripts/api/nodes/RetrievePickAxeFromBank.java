@@ -42,7 +42,9 @@ public class RetrievePickAxeFromBank implements Nodeable, Workable {
         log("Retrieving pickaxe");
         // open the bank
         if (!Bank.isOpen()) {
-            Bank.open();
+            if (!Bank.open()) {
+                walkToBank();
+            }
         }
         // bank is open
         if (Bank.isOpen()) {

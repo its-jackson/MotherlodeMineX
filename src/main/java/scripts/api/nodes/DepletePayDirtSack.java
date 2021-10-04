@@ -42,6 +42,11 @@ public class DepletePayDirtSack implements Nodeable, Workable {
             // wait in between each iteration
             int sleepTime = AntiBan.sleep(MotherlodeMineXVariables.get().getWaitTimes());
 
+            // open coal bag
+            if (openCoalBag()) {
+                log("Opened coal bag successful");
+            }
+
             boolean clickResult = false;
 
             if (!Inventory.isFull() && payDirtSackCount() > 0) {

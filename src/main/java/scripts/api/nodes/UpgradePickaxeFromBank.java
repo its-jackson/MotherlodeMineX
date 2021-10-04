@@ -5,7 +5,6 @@ import org.tribot.script.sdk.Equipment;
 import org.tribot.script.sdk.Inventory;
 import org.tribot.script.sdk.Waiting;
 import org.tribot.script.sdk.cache.BankCache;
-import scripts.MotherlodeMineX;
 import scripts.MotherlodeMineXVariables;
 import scripts.api.Work;
 import scripts.api.Worker;
