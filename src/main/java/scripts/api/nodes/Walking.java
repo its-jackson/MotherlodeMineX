@@ -171,7 +171,7 @@ public class Walking implements Nodeable, Workable {
     // inventory is not full
     // pay-dirt sack is not full
     private boolean shouldWalkToOreVeins() {
-        if (!inventoryFullPayDirt()) {
+        if (!Inventory.isFull()) {
             if (workerHasOptimalPickaxe(Worker.getInstance().getPickaxe())) {
                 if (workerHasMotherlodeEquipment(MotherlodeMineXVariables.get().getSettings())) {
                     if (!workerIsInLocation(getWork())) {
@@ -312,7 +312,6 @@ public class Walking implements Nodeable, Workable {
         Optional<GameObject> ladderGameObject = Query.gameObjects()
                 .idEquals(LADDER_LOWER_ID)
                 .inArea(Area.fromRadius(LADDER_LOWER_TILE, 5))
-                .isReachable()
                 .findFirst();
 
         if (ladderGameObject.filter(this::interactGameObject).isPresent()) {

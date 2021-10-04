@@ -203,7 +203,7 @@ public class MineOreVein implements Nodeable, Workable {
     }
 
     private boolean shouldMineOreVein() {
-        if (!inventoryFullPayDirt()) {
+        if (!Inventory.isFull()) {
             if (workerHasMotherlodeEquipment(MotherlodeMineXVariables.get().getSettings())) {
                 if (workerHasOptimalPickaxe(Worker.getInstance().getPickaxe())) {
                     if (inventoryContainsHammer()) {
