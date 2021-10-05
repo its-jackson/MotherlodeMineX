@@ -1,8 +1,9 @@
-package scripts.api;
+package scripts.api.enums;
 
 public enum WorkType {
 
-    MOTHERLODE_MINE("Motherlode Mine");
+    MOTHERLODE_MINE("Motherlode Mine"),
+    MINING("Mining");
 
     private final String workType;
 

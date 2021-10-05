@@ -13,7 +13,7 @@ import org.tribot.script.sdk.Waiting;
 import javax.swing.*;
 import java.net.URL;
 
-public class GuiFx extends Application {
+public class GUIFX extends Application {
 
     private Controller controller;
 
@@ -24,7 +24,7 @@ public class GuiFx extends Application {
 
     private URL fxml;
 
-    public GuiFx(URL fxml) {
+    public GUIFX(URL fxml) {
 
         this.fxml = fxml;
 

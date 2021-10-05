@@ -9,10 +9,11 @@ import org.tribot.script.sdk.cache.BankCache;
 import org.tribot.script.sdk.query.Query;
 import org.tribot.script.sdk.types.*;
 import org.tribot.script.sdk.walking.GlobalWalking;
+import org.tribot.script.sdk.walking.LocalWalking;
 import org.tribot.script.sdk.walking.WalkState;
 import scripts.MotherlodeMineXSettings;
-import scripts.api.ResourceLocation;
-import scripts.api.Work;
+import scripts.api.enums.ResourceLocation;
+import scripts.api.works.Work;
 import scripts.api.antiban.AntiBan;
 
 import javax.imageio.ImageIO;
@@ -485,7 +486,7 @@ public interface Workable {
         // construct new WorldTile
         WorldTile bankTile = new WorldTile(x, y, plane);
         // worker distance to bank less than 7
-        return MyPlayer.getPosition().distanceTo(bankTile) < 7;
+        return MyPlayer.getPosition().distanceTo(bankTile) < 7 && LocalWalking.createMap().canReach(bankTile);
     }
 
     /**

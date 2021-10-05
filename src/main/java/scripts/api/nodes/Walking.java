@@ -1,5 +1,7 @@
 package scripts.api.nodes;
 
+import org.tribot.api2007.PathFinding;
+import org.tribot.api2007.types.RSTile;
 import org.tribot.script.sdk.Bank;
 import org.tribot.script.sdk.Inventory;
 import org.tribot.script.sdk.MyPlayer;
@@ -11,8 +13,10 @@ import org.tribot.script.sdk.types.GameObject;
 import scripts.MotherlodeMineXVariables;
 import scripts.api.*;
 import scripts.api.antiban.AntiBan;
+import scripts.api.enums.ResourceLocation;
 import scripts.api.interfaces.Nodeable;
 import scripts.api.interfaces.Workable;
+import scripts.api.works.Work;
 
 import java.util.Optional;
 
@@ -312,6 +316,7 @@ public class Walking implements Nodeable, Workable {
         Optional<GameObject> ladderGameObject = Query.gameObjects()
                 .idEquals(LADDER_LOWER_ID)
                 .inArea(Area.fromRadius(LADDER_LOWER_TILE, 5))
+                .filter(gameObject -> PathFinding.canReach(new RSTile(gameObject.getTile().getX(), gameObject.getTile().getY(), gameObject.getTile().getPlane()), true))
                 .findFirst();
 
         if (ladderGameObject.filter(this::interactGameObject).isPresent()) {
@@ -325,7 +330,7 @@ public class Walking implements Nodeable, Workable {
         Optional<GameObject> ladderGameObject = Query.gameObjects()
                 .idEquals(LADDER_UPPER_ID)
                 .inArea(Area.fromRadius(LADDER_UPPER_TILE, 5))
-                .isReachable()
+                .filter(gameObject -> PathFinding.canReach(new RSTile(gameObject.getTile().getX(), gameObject.getTile().getY(), gameObject.getTile().getPlane()), true))
                 .findFirst();
 
         if (ladderGameObject.filter(this::interactGameObject).isPresent()) {

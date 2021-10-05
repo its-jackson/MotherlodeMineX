@@ -7,11 +7,11 @@ import org.tribot.script.sdk.query.Query;
 import org.tribot.script.sdk.types.GameObject;
 import org.tribot.script.sdk.types.WorldTile;
 import scripts.MotherlodeMineXVariables;
-import scripts.api.ResourceLocation;
+import scripts.api.enums.ResourceLocation;
 import scripts.api.Worker;
 import scripts.api.antiban.AntiBan;
 import scripts.api.interfaces.Nodeable;
-import scripts.api.Work;
+import scripts.api.works.Work;
 import scripts.api.interfaces.Workable;
 
 import java.util.ArrayList;
@@ -24,11 +24,6 @@ public class MineOreVein implements Nodeable, Workable {
     private GameObject currentOreVein;
     private UpgradePickaxeFromBank upgradePickAxe;
     private WorldHop worldHop;
-
-    public MineOreVein(Work work, UpgradePickaxeFromBank upgradePickAxe) {
-        this.work = work;
-        this.upgradePickAxe = upgradePickAxe;
-    }
 
     public MineOreVein(Work work) {
         this.work = work;
@@ -84,6 +79,7 @@ public class MineOreVein implements Nodeable, Workable {
                                                         if (y != 5660) {
                                                             if (y != 5657) {
                                                                 return PathFinding.canReach(new RSTile(x, y, plane), true);
+                                                                //return LocalWalking.createMap().canReach(worldTile);
                                                             }
                                                         }
                                                     }
@@ -167,6 +163,7 @@ public class MineOreVein implements Nodeable, Workable {
     // special attack, antiban, game tab, world hop
     private void completeMiningTask() {
         int timeOut = 0;
+        int cap = 20;
 
          // set world hop node
         MotherlodeMineXVariables.get()
@@ -176,29 +173,34 @@ public class MineOreVein implements Nodeable, Workable {
                 .findFirst()
                 .ifPresent(node -> setWorldHop((WorldHop) node));
 
-        while (timeOut < 15) {
-            Waiting.waitUniform(1500, 2500);
+        while (timeOut < cap) {
             log(State.MINING_ORE_VEIN.getState());
+            timeOut = 0;
             while (!MyPlayer.isAnimating()) {
-                Waiting.waitUniform(100, 300);
-                timeOut++;
-                if (timeOut > 15) {
+                Waiting.waitUniform(60, 100);
+                ++timeOut;
+                if (timeOut > cap) {
                     break;
                 }
             }
             // world hop
             if (getWorldHop() != null && getWorldHop().validate()) {
                 getWorldHop().execute();
+                Waiting.waitUniform(100, 300);
             }
-            Waiting.waitUniform(100, 300);
             // do special attack if able
             boolean specialAttackResult = performSpecialAttack();
-            Waiting.waitUniform(100, 300);
+            if (specialAttackResult) {
+                Waiting.waitUniform(100, 300);
+            }
             // reset game tab if not open
             boolean gameTabResult = resetGameTab();
-            Waiting.waitUniform(100, 300);
+            if (gameTabResult) {
+                Waiting.waitUniform(100, 300);
+            }
             // perform AntiBan
             AntiBan.checkAntiBanTask(getCurrentOreVein());
+            Waiting.waitUniform(500, 1000);
         }
     }
 

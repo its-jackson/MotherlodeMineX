@@ -16,7 +16,8 @@ import scripts.api.interfaces.Nodeable;
 import scripts.api.interfaces.Workable;
 import scripts.api.nodes.*;
 import scripts.api.works.MotherlodeMine;
-import scripts.gui.GuiFx;
+import scripts.api.works.Work;
+import scripts.gui.GUIFX;
 
 import java.awt.*;
 import java.net.MalformedURLException;
@@ -69,7 +70,7 @@ public class MotherlodeMineX implements TribotScript {
             e.printStackTrace();
         }
         // set gui
-        MotherlodeMineXVariables.get().setGui(new GuiFx(MotherlodeMineXVariables.get().getFxml()));
+        MotherlodeMineXVariables.get().setGui(new GUIFX(MotherlodeMineXVariables.get().getFxml()));
         MotherlodeMineXVariables.get().getGui().show();
         while (MotherlodeMineXVariables.get().getGui().isOpen()) {
             Waiting.wait(500);
@@ -81,7 +82,9 @@ public class MotherlodeMineX implements TribotScript {
 //        getSettings().setWearProspectorEquipment(true);
 //        getSettings().setDesiredPickaxe(Workable.PickAxe.RUNE_PICKAXE);
         // start script timer
-        getStopWatch().start();
+        if (getStopWatch().isStopped()) {
+            getStopWatch().start();
+        }
         // listeners
         MessageListening.addServerMessageListener(message -> {
             message = message.toLowerCase(Locale.ROOT);
@@ -115,7 +118,7 @@ public class MotherlodeMineX implements TribotScript {
             // statistics primary
             //g2d.setFont(getVariables().getMainFont());
             graphics.setFont(MotherlodeMineXVariables.get().getSecondaryFont());
-            graphics.drawString("Version: 1.00", 10, 100); // runtime
+            graphics.drawString("Version: 1.00", 10, 100); // profit
             graphics.drawString("Time Running:", 15, 370); // runtime
             graphics.drawString("Profit:", 15, 385); // state
             //
@@ -184,7 +187,7 @@ public class MotherlodeMineX implements TribotScript {
                     // set random angle
                     Camera.setAngle(General.random(85, 100));
                     // set random zoom percent
-                    //Camera.setZoomPercent(General.random(0, 50));
+                    Camera.setZoomPercent(General.random(0, 50));
                     // reset the inventory once complete
                     GameTab.INVENTORY.open();
                     // display all fatigue multiples
@@ -248,4 +251,5 @@ public class MotherlodeMineX implements TribotScript {
     public static StopWatch getStopWatch() {
         return stop_watch;
     }
+
 }

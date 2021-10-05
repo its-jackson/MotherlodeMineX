@@ -108,9 +108,16 @@ public class TimeElapse implements Validatable {
         setTimeElapsed(Timing.timeFromMark(getStartTime()));
     }
 
-    // convert all fields (day, hour, minute, second) to milliseconds.
-    // create a duration of the amount in ChronoUnit milliseconds.
-    // for time elapsed validation
+    /**
+     * convert all fields (day, hour, minute, second) to milliseconds.
+     * create a duration of the amount in ChronoUnit milliseconds.
+     * for time elapsed validation
+     *
+     * @param day To milliseconds
+     * @param hour To milliseconds
+     * @param minute To milliseconds
+     * @param second To milliseconds
+     */
     private void completeDuration(long day, long hour, long minute, long second) {
         final long day_to_millisecond = Duration.of(day, ChronoUnit.DAYS)
                 .toMillis();

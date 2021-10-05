@@ -2,6 +2,9 @@ package scripts.api.works;
 
 import dax.api_lib.models.RunescapeBank;
 import scripts.api.*;
+import scripts.api.enums.Resource;
+import scripts.api.enums.ResourceLocation;
+import scripts.api.enums.ResourceOption;
 
 public class MotherlodeMine extends Work {
 

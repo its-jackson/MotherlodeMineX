@@ -1,7 +1,11 @@
-package scripts.api;
+package scripts.api.works;
 
 import dax.api_lib.models.RunescapeBank;
 import org.tribot.script.sdk.Skill;
+import scripts.api.TimeElapse;
+import scripts.api.enums.Resource;
+import scripts.api.enums.ResourceLocation;
+import scripts.api.enums.ResourceOption;
 import scripts.api.interfaces.Validatable;
 
 import java.io.Serializable;

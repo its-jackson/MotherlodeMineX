@@ -1,7 +1,7 @@
 package scripts;
 
 import scripts.api.interfaces.Nodeable;
-import scripts.gui.GuiFx;
+import scripts.gui.GUIFX;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,18 +15,21 @@ public class MotherlodeMineXVariables {
 
     private static final MotherlodeMineXVariables instance = new MotherlodeMineXVariables();
 
-    private GuiFx gui;
+    private GUIFX gui;
     private URL fxml;
 
     private MotherlodeMineXSettings settings = new MotherlodeMineXSettings();
     private List<Nodeable> nodes = new ArrayList<>();
     private List<Integer> waitTimes = new ArrayList<>();
+
     private double currentFatigueMultiple;
 
     private boolean start;
     private boolean optimization;
 
-    private final Image img = Objects.requireNonNull(getImage("https://jacksonjohnson.ca/motherlodeminex/Full_paint_motherlode_mine_x.png")).getScaledInstance(520, 160, Image.SCALE_SMOOTH);
+    private final Image img = Objects.requireNonNull(getImage("https://jacksonjohnson.ca/motherlodeminex/Full_paint_motherlode_mine_x.png"))
+            .getScaledInstance(520, 160, Image.SCALE_SMOOTH);
+
     private final RenderingHints anti_aliasing = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     private final Font main_font = new Font("Verdana", Font.BOLD, 12);
     private final Font secondary_font = new Font("Verdana", Font.PLAIN, 12);
@@ -53,11 +56,11 @@ public class MotherlodeMineXVariables {
         return instance;
     }
 
-    public GuiFx getGui() {
+    public GUIFX getGui() {
         return gui;
     }
 
-    public void setGui(GuiFx gui) {
+    public void setGui(GUIFX gui) {
         this.gui = gui;
     }
 

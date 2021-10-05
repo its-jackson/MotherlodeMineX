@@ -6,7 +6,7 @@ import org.tribot.script.sdk.query.Query;
 import org.tribot.script.sdk.types.GameObject;
 import scripts.MotherlodeMineXVariables;
 import scripts.api.PayDirt;
-import scripts.api.Work;
+import scripts.api.works.Work;
 import scripts.api.antiban.AntiBan;
 import scripts.api.interfaces.Nodeable;
 import scripts.api.interfaces.Workable;

@@ -4,7 +4,7 @@ import org.tribot.script.sdk.Bank;
 import org.tribot.script.sdk.Equipment;
 import org.tribot.script.sdk.tasks.BankTask;
 import scripts.MotherlodeMineXVariables;
-import scripts.api.Work;
+import scripts.api.works.Work;
 import scripts.api.Worker;
 import scripts.api.antiban.AntiBan;
 import scripts.api.interfaces.Nodeable;

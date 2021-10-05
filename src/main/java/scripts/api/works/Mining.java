@@ -1,6 +1,9 @@
 package scripts.api.works;
 
 import scripts.api.*;
+import scripts.api.enums.Resource;
+import scripts.api.enums.ResourceLocation;
+import scripts.api.enums.ResourceOption;
 
 public class Mining extends Work {
 

@@ -1,6 +1,7 @@
-package scripts.api;
+package scripts.api.enums;
 
 import org.tribot.script.sdk.types.WorldTile;
+import scripts.api.PolymorphicArea;
 
 public enum ResourceLocation {
 

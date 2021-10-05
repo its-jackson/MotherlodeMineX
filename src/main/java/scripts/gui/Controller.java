@@ -15,8 +15,13 @@ import org.tribot.script.sdk.util.ScriptSettings;
 import scripts.MotherlodeMineXSettings;
 import scripts.MotherlodeMineXVariables;
 import scripts.api.*;
+import scripts.api.enums.Resource;
+import scripts.api.enums.ResourceLocation;
+import scripts.api.enums.ResourceOption;
+import scripts.api.enums.WorkType;
 import scripts.api.interfaces.Workable;
 import scripts.api.works.MotherlodeMine;
+import scripts.api.works.Work;
 
 import java.awt.*;
 import java.io.File;
@@ -30,13 +35,13 @@ import java.time.Duration;
 import java.util.*;
 import java.util.List;
 
-import static scripts.api.WorkType.MOTHERLODE_MINE;
+import static scripts.api.enums.WorkType.MOTHERLODE_MINE;
 
 @DoNotRename
 public class Controller implements Initializable {
 
     @DoNotRename
-    private GuiFx gui;
+    private GUIFX gui;
 
     @FXML
     @DoNotRename
@@ -819,12 +824,12 @@ public class Controller implements Initializable {
     }
 
     @DoNotRename
-    public GuiFx getGui() {
+    public GUIFX getGui() {
         return gui;
     }
 
     @DoNotRename
-    public void setGui(GuiFx gui) {
+    public void setGui(GUIFX gui) {
         this.gui = gui;
     }
 

@@ -8,7 +8,7 @@ import org.tribot.script.sdk.query.Query;
 import scripts.MotherlodeMineXSettings;
 import scripts.MotherlodeMineXVariables;
 import scripts.api.PolymorphicArea;
-import scripts.api.Work;
+import scripts.api.works.Work;
 import scripts.api.antiban.AntiBan;
 import scripts.api.interfaces.Nodeable;
 import scripts.api.interfaces.Workable;

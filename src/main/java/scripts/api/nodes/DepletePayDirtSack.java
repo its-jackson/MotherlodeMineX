@@ -7,7 +7,7 @@ import org.tribot.script.sdk.query.Query;
 import org.tribot.script.sdk.types.GameObject;
 import scripts.MotherlodeMineXVariables;
 import scripts.api.PayDirt;
-import scripts.api.Work;
+import scripts.api.works.Work;
 import scripts.api.Worker;
 import scripts.api.antiban.AntiBan;
 import scripts.api.interfaces.Nodeable;
@@ -32,8 +32,7 @@ public class DepletePayDirtSack implements Nodeable, Workable {
         this.work = work;
     }
 
-    public DepletePayDirtSack() {
-    }
+    public DepletePayDirtSack() {}
 
     @Override
     public void execute() {

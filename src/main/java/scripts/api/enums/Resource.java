@@ -1,4 +1,4 @@
-package scripts.api;
+package scripts.api.enums;
 
 public enum Resource {
 
