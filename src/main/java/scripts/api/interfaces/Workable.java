@@ -31,7 +31,8 @@ public interface Workable {
         MINING_ORE_VEIN("Mining ore vein"),
         LOCATING_ORE_VEIN("Locating ore vein"),
         LOCATING_ORE_VEIN_SUCCESS("Located ore vein successful"),
-        CLICK_ORE_VEIN_SUCCESS("Clicked ore vein successful");
+        CLICK_ORE_VEIN_SUCCESS("Clicked ore vein successful")
+        ;
 
         private final String state;
 
@@ -62,7 +63,8 @@ public interface Workable {
         GILDED_PICKAXE(23276, 41),
         TRAILBLAZER_PICKAXE(25112, 1),
         CRYSTAL_PICKAXE(23680, 71),
-        CRYSTAL_PICKAXE_UNCHARGED(23682, 71);
+        CRYSTAL_PICKAXE_UNCHARGED(23682, 71)
+        ;
 
         private final int pick_axe_id;
         private final int pick_axe_level;
@@ -290,7 +292,8 @@ public interface Workable {
     }
 
     default boolean inventoryFullOre() {
-        return Inventory.isFull() && Inventory.contains(inventoryItem -> inventoryItem.getName().contains("ore")
+        return Inventory.isFull() && Inventory.contains(
+                inventoryItem -> inventoryItem.getName().contains("ore")
                 || inventoryItem.getName().equals("Coal"));
     }
 
@@ -316,7 +319,9 @@ public interface Workable {
     }
 
     default boolean inventoryContainsOre() {
-        return Inventory.contains(inventoryItem -> inventoryItem.getName().contains("ore") ||
+        return Inventory.contains(inventoryItem ->
+                inventoryItem.getName().contains("ore")
+                        ||
                 inventoryItem.getName().equals("Coal"));
     }
 
@@ -537,7 +542,7 @@ public interface Workable {
     /**
      * Calculate the best/optimal pickaxe currently inside the bank
      *
-     * @return The best pickaxe ID pertaining to the workers bank and mining level; otherwise -1
+     * @return The best pickaxe ID pertaining to the workers bank and mining level; otherwise empty optional
      */
     static Optional<PickAxe> calculateOptimalPickAxeInBank(int miningLevel) {
         // order always matters
@@ -609,7 +614,7 @@ public interface Workable {
     /**
      * Calculate the best/optimal pickaxe currently inside the inventory
      *
-     * @return The best pickaxe ID pertaining to the workers inventory or equipment; otherwise -1
+     * @return The best pickaxe ID pertaining to the workers inventory or equipment; otherwise empty optional
      */
     static Optional<PickAxe> calculateOptimalPickAxeOnWorker(int miningLevel) {
         PickAxe equippedPickAxe = null;
@@ -710,7 +715,7 @@ public interface Workable {
     }
 
     default boolean openGemBag() {
-        if (Inventory.contains(GEM_BAG_OPEN)) {
+        if (Inventory.contains(GEM_BAG_OPEN) || !Inventory.contains(GEM_BAG)) {
             return false;
         }
 
@@ -723,7 +728,7 @@ public interface Workable {
     }
 
     default boolean openCoalBag() {
-        if (Inventory.contains(COAL_BAG_OPEN)) {
+        if (Inventory.contains(COAL_BAG_OPEN) || !Inventory.contains(COAL_BAG)) {
             return false;
         }
 

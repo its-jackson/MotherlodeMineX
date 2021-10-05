@@ -62,7 +62,8 @@ public class DepletePayDirtSack implements Nodeable, Workable {
                             if (clickResult) {
                                 Waiting.waitUntil(this::inventoryContainsOre);
                                 // set profit
-                                int goldGained = Inventory.getAll().stream()
+                                int goldGained = Inventory.getAll()
+                                        .stream()
                                         .filter(inventoryItem -> inventoryItem.getId() != Worker.getInstance().getPickaxe().getPickAxeId())
                                         .filter(inventoryItem -> inventoryItem.getId() != Workable.HAMMER)
                                         .map(Item::lookupPrice)
