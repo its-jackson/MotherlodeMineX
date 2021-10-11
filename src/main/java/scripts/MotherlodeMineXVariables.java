@@ -22,8 +22,7 @@ public class MotherlodeMineXVariables {
     private List<Nodeable> nodes = new ArrayList<>();
     private List<Integer> waitTimes = new ArrayList<>();
 
-    private double currentFatigueMultiple;
-
+    private String state = "";
     private boolean start;
     private boolean optimization;
 
@@ -32,7 +31,7 @@ public class MotherlodeMineXVariables {
 
     private final RenderingHints anti_aliasing = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     private final Font main_font = new Font("Verdana", Font.BOLD, 12);
-    private final Font secondary_font = new Font("Verdana", Font.PLAIN, 12);
+    private final Font secondary_font = new Font("Verdana", Font.PLAIN, 11);
     private final Color progress_colour_background = new Color(0, 0, 0, 0.5F);
     private final Color main_font_colour = new Color(22, 196, 219);
 
@@ -92,12 +91,12 @@ public class MotherlodeMineXVariables {
         return waitTimes;
     }
 
-    public double getCurrentFatigueMultiple() {
-        return currentFatigueMultiple;
+    public String getState() {
+        return state;
     }
 
-    public void setCurrentFatigueMultiple(double currentFatigueMultiple) {
-        this.currentFatigueMultiple = currentFatigueMultiple;
+    public void setState(String state) {
+        this.state = state;
     }
 
     public boolean isStart() {

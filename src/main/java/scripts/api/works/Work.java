@@ -2,6 +2,7 @@ package scripts.api.works;
 
 import dax.api_lib.models.RunescapeBank;
 import org.tribot.script.sdk.Skill;
+import org.tribot.script.sdk.types.WorldTile;
 import scripts.api.TimeElapse;
 import scripts.api.enums.Resource;
 import scripts.api.enums.ResourceLocation;
@@ -19,6 +20,7 @@ public abstract class Work implements Validatable, Serializable {
     private int level;
     private TimeElapse time;
     private RunescapeBank bankLocation;
+    private WorldTile alternateBankLocation;
 
     public Work(Resource resource, ResourceLocation resourceLocation, ResourceOption resourceOption, int level, TimeElapse time) {
         this.resource = resource;
@@ -134,6 +136,14 @@ public abstract class Work implements Validatable, Serializable {
         this.bankLocation = bankLocation;
     }
 
+    public WorldTile getAlternateBankLocation() {
+        return alternateBankLocation;
+    }
+
+    public void setAlternateBankLocation(WorldTile alternateBankLocation) {
+        this.alternateBankLocation = alternateBankLocation;
+    }
+
     @Override
     public String toString() {
         return "Work{" +
@@ -143,6 +153,7 @@ public abstract class Work implements Validatable, Serializable {
                 ", level=" + level +
                 ", time=" + time +
                 ", bankLocation=" + bankLocation +
+                ", alternateBankLocation=" + alternateBankLocation +
                 '}';
     }
 }

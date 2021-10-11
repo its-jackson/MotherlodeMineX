@@ -1,11 +1,15 @@
 package scripts.api.works;
 
+import dax.api_lib.models.RunescapeBank;
+import org.tribot.script.sdk.types.WorldTile;
 import scripts.api.*;
 import scripts.api.enums.Resource;
 import scripts.api.enums.ResourceLocation;
 import scripts.api.enums.ResourceOption;
 
 public class Mining extends Work {
+
+    private final WorldTile PORT_SARIM_BANK_TILE = new WorldTile(0, 0, 0);
 
     public Mining(Resource resource, ResourceLocation resourceLocation, ResourceOption resourceOption, int level, TimeElapse time) {
         super(resource, resourceLocation, resourceOption, level, time);
@@ -23,7 +27,8 @@ public class Mining extends Work {
         super(resource, resourceLocation, resourceOption);
     }
 
-    public Mining() {}
+    public Mining() {
+    }
 
     /**
      * Validate the work given - if the worker's level hasn't been reached
@@ -44,6 +49,25 @@ public class Mining extends Work {
      */
     @Override
     public void completeState(ResourceLocation resourceLocation) {
-
+        switch (resourceLocation) {
+            case MINING_LUMBRIDGE_SWAMP:
+                setBankLocation(RunescapeBank.LUMBRIDGE_TOP);
+                break;
+            case MINING_LUMBRIDGE_SOUTH_WEST:
+                setBankLocation(RunescapeBank.DRAYNOR);
+                break;
+            case MINING_VARROCK_SOUTH_WEST:
+                setBankLocation(RunescapeBank.VARROCK_WEST);
+                break;
+            case MINING_VARROCK_SOUTH_EAST:
+                setBankLocation(RunescapeBank.VARROCK_EAST);
+                break;
+            case MINING_BARBARIAN_VILLAGE:
+                setBankLocation(RunescapeBank.EDGEVILLE);
+                break;
+            case MINING_RIMMINGTON:
+                setBankLocation(RunescapeBank.FALADOR_EAST);
+                setAlternateBankLocation(PORT_SARIM_BANK_TILE);
+        }
     }
 }

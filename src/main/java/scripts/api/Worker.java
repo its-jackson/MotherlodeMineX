@@ -37,6 +37,7 @@ public class Worker {
 
     public void incrementLevelCount() {
         this.levelCount++;
+        this.actualMiningLevel += this.levelCount;
     }
 
     public static Worker getInstance() {

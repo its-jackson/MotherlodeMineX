@@ -1,5 +1,7 @@
 package scripts.api.enums;
 
+import org.tribot.script.sdk.types.Area;
+import org.tribot.script.sdk.types.World;
 import org.tribot.script.sdk.types.WorldTile;
 import scripts.api.PolymorphicArea;
 
@@ -672,7 +674,40 @@ public enum ResourceLocation {
             new WorldTile(3765, 5679, 0),
             new WorldTile(3766, 5657, 0),
             new WorldTile(3766, 5678, 0)
-    ));
+    )),
+
+    MINING_LUMBRIDGE_SWAMP(new PolymorphicArea(Area.fromRectangle(
+            new WorldTile(3222, 3151, 0),
+            new WorldTile(3231, 3143, 0)))),
+
+    MINING_LUMBRIDGE_SOUTH_WEST(new PolymorphicArea(Area.fromRectangle(
+            new WorldTile(3142, 3154, 0),
+            new WorldTile(3150, 3143, 0)))),
+
+    MINING_BARBARIAN_VILLAGE(new PolymorphicArea(Area.fromRectangle(
+            new WorldTile(3077, 3423, 0),
+            new WorldTile(3085, 3417, 0)))),
+
+    MINING_VARROCK_SOUTH_WEST(new PolymorphicArea(Area.fromPolygon(
+            new WorldTile(3171, 3365, 0),
+            new WorldTile(3182, 3381, 0),
+            new WorldTile(3189, 3378, 0),
+            new WorldTile(3178, 3363, 0)))),
+
+    MINING_VARROCK_SOUTH_EAST(new PolymorphicArea(Area.fromPolygon(
+            new WorldTile(3281, 3370, 0),
+            new WorldTile(3281, 3360, 0),
+            new WorldTile(3292, 3360, 0),
+            new WorldTile(3290, 3372, 0)))),
+
+    MINING_RIMMINGTON(new PolymorphicArea(Area.fromPolygon(
+            new WorldTile(2966, 3239, 0),
+            new WorldTile(2978, 3230, 0),
+            new WorldTile(2988, 3234, 0),
+            new WorldTile(2990, 3242, 0),
+            new WorldTile(2982, 3250, 0),
+            new WorldTile(2972, 3248, 0))))
+    ;
 
     private final PolymorphicArea polymorphicArea;
 
@@ -680,7 +715,7 @@ public enum ResourceLocation {
         this.polymorphicArea = polymorphicArea;
     }
 
-    public PolymorphicArea getArea() {
+    public PolymorphicArea getPolymorphicArea() {
         return this.polymorphicArea;
     }
 }

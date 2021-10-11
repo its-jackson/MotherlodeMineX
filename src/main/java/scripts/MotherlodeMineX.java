@@ -14,7 +14,8 @@ import scripts.api.*;
 import scripts.api.antiban.AntiBan;
 import scripts.api.interfaces.Nodeable;
 import scripts.api.interfaces.Workable;
-import scripts.api.nodes.*;
+import scripts.api.nodes.motherlodemine.*;
+import scripts.api.nodes.shared.*;
 import scripts.api.works.MotherlodeMine;
 import scripts.api.works.Work;
 import scripts.gui.GUIFX;
@@ -32,11 +33,11 @@ import java.util.Locale;
  * <p>
  * 2) Client args
  * <p>
- * 3) Different type of work (generic mining)
+ * 3) Different type of work (generic mining) - COMPLETE
  */
 
 /*
- Version 1.00
+ Version 1.01
  */
 
 @TribotScriptManifest(
@@ -88,7 +89,7 @@ public class MotherlodeMineX implements TribotScript {
         // listeners
         MessageListening.addServerMessageListener(message -> {
             message = message.toLowerCase(Locale.ROOT);
-            if (message.contains("you manage to mine some pay-dirt")) {
+            if (message.contains("you manage to mine some")) {
                 Worker.getInstance().incrementOreCount();
             }
             if (message.contains("congratulations")) {
@@ -109,31 +110,43 @@ public class MotherlodeMineX implements TribotScript {
             // anti aliasing
             graphics.setRenderingHints(MotherlodeMineXVariables.get().getAntiAliasing());
             // vars
-            long oresPerHour = (long) (Worker.getInstance().getOreCount() * (3600000 / (double) getStopWatch().getTime()));
+            int factor = 3600000;
+            long oresPerHour = (long) (Worker.getInstance().getOreCount() * (factor / (double) getStopWatch().getTime()));
             int gainedEXP = Worker.getInstance().calculateExperienceGained();
-            long EXPPerHour = (long) (gainedEXP * (3600000 / (double) getStopWatch().getTime()));
+            long EXPPerHour = (long) (gainedEXP * (factor / (double) getStopWatch().getTime()));
+            long gpPerHour = (long) (Worker.getInstance().getGoldGained() * (factor / (double) getStopWatch().getTime()));
             int percentToNextLevel = Skill.MINING.getXpPercentToNextLevel();
             // main img
             graphics.drawImage(MotherlodeMineXVariables.get().getImg(), -1, 318, null);
             // statistics primary
-            //g2d.setFont(getVariables().getMainFont());
             graphics.setFont(MotherlodeMineXVariables.get().getSecondaryFont());
-            graphics.drawString("Version: 1.00", 10, 100); // profit
+            graphics.drawString("Version: 1.01", 10, 100); // profit
             graphics.drawString("Time Running:", 15, 370); // runtime
-            graphics.drawString("Profit:", 15, 385); // state
+            graphics.drawString("Status:", 15, 385); // state
             //
-            graphics.drawString("Ores Mined:", 80, 410); // ores mined
-            graphics.drawString("Ores/Hour:", 80, 425); // ores mined per hour
-            graphics.drawString("XP Gained:", 80, 440); // gained xp
-            graphics.drawString("XP/Hour:", 80, 455); // gained xp/hour
+            graphics.drawString("Ores Mined:", 75, 410); // ores mined
+            graphics.drawString("Ores/HR:", 75, 425); // ores mined per hour
+            graphics.drawString("XP Gained:", 75, 440); // gained xp
+            graphics.drawString("XP/HR:", 75, 455); // gained xp/hour
+            graphics.drawString("GP Gained:", 250, 440); // ores mined
+            graphics.drawString("GP/HR:", 250, 455); // ores mined
+            graphics.drawString("Levels Gained:", 250, 410); // ores mined
+            graphics.drawString("Current Level:", 250, 425); // ores mined
             // statistics secondary
-            graphics.drawString(Timing.msToString(getStopWatch().getTime()), 120, 371); // runtime
+            graphics.drawString(Timing.msToString(getStopWatch().getTime()), 105, 371); // runtime
             //
-            graphics.drawString(String.format("%,d", Worker.getInstance().getGoldGained()) + " GP", 120, 385);
-            graphics.drawString(String.format("%,d", Worker.getInstance().getOreCount()) + " Ores", 170, 410); // ores mined
-            graphics.drawString(String.format("%,d", oresPerHour) + " Ores/Hour", 170, 425); // logs hr
-            graphics.drawString(String.format("%,d", gainedEXP) + " XP", 170, 440); // gained xp
-            graphics.drawString(String.format("%,d", EXPPerHour) + " XP/Hour", 170, 455); // gained xp hour
+            graphics.drawString(MotherlodeMineXVariables.get().getState(), 105, 385);
+
+            graphics.drawString(String.format("%,d", Worker.getInstance().getGoldGained()) + " GP", 340, 440); // gp gained
+            graphics.drawString(String.format("%,d", gpPerHour) + " GP/HR", 340, 455); // gp hour
+
+            graphics.drawString(Worker.getInstance().getLevelCount() + " LVLS", 340, 410);
+            graphics.drawString(String.valueOf(Worker.getInstance().getActualMiningLevel()), 340, 425);
+
+            graphics.drawString(String.format("%,d", Worker.getInstance().getOreCount()) + " Ores", 150, 410); // ores mined
+            graphics.drawString(String.format("%,d", oresPerHour) + " Ores/HR", 150, 425); // logs hr
+            graphics.drawString(String.format("%,d", gainedEXP) + " XP", 150, 440); // gained xp
+            graphics.drawString(String.format("%,d", EXPPerHour) + " XP/HR", 150, 455); // gained xp hour
             // percentage to level bar
             graphics.setColor(Color.CYAN);
             graphics.fillRect(-1, 479, percentToNextLevel * 519 / 100, 25);
@@ -184,10 +197,10 @@ public class MotherlodeMineX implements TribotScript {
                     } else {
                         Worker.getInstance().setPickaxe(Workable.calculateOptimalPickAxeOnWorker(Worker.getInstance().getActualMiningLevel()).orElse(null));
                     }
-                    // set random angle
-                    Camera.setAngle(General.random(85, 100));
                     // set random zoom percent
                     Camera.setZoomPercent(General.random(0, 50));
+                    // set random angle
+                    Camera.setAngle(General.random(85, 100));
                     // reset the inventory once complete
                     GameTab.INVENTORY.open();
                     // display all fatigue multiples
@@ -199,7 +212,7 @@ public class MotherlodeMineX implements TribotScript {
                 }
                 do {
                     // perform the work
-                    for (Work work : MotherlodeMineXVariables.get().getSettings().getMotherlodeWork()) {
+                    for (Work work : MotherlodeMineXVariables.get().getSettings().getWork()) {
                         Log.log(work);
                         // get nodes and clear
                         List<Nodeable> nodes = MotherlodeMineXVariables.get().getNodes();
@@ -211,7 +224,8 @@ public class MotherlodeMineX implements TribotScript {
                         }
                         // initialize the nodes for the type of work polymorphic
                         if (work instanceof MotherlodeMine) {
-                            nodes.add(new MineOreVein(work));
+                            // is motherlode mine work
+                            nodes.add(new MineResource(work));
                             nodes.add(new DepositPayDirt(work));
                             nodes.add(new RepairBrokenStrut(work));
                             nodes.add(new Walking(work));
@@ -219,7 +233,15 @@ public class MotherlodeMineX implements TribotScript {
                             nodes.add(new SearchCrateForHammer(work));
                             nodes.add(new DepletePayDirtSack(work));
                             nodes.add(new RetrievePickAxeFromBank(work));
-                            nodes.add(new RetrieveWorkerEquipment(work));
+                            nodes.add(new RetrieveMotherlodeEquipment(work));
+                            nodes.add(new WorldHop(work));
+                        } else {
+                            // is mining work
+                            nodes.add(new MineResource(work));
+                            nodes.add(new RetrievePickAxeFromBank(work));
+                            nodes.add(new Walking(work));
+                            nodes.add(new Banking(work));
+                            nodes.add(new Dropping(work));
                             nodes.add(new WorldHop(work));
                         }
                         // loop while the work is validated (reached time or level)

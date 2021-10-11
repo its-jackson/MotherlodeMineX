@@ -3,7 +3,9 @@ package scripts;
 import scripts.api.interfaces.Workable;
 import scripts.api.works.Mining;
 import scripts.api.works.MotherlodeMine;
+import scripts.api.works.Work;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MotherlodeMineXSettings {
@@ -25,11 +27,14 @@ public class MotherlodeMineXSettings {
 
     private boolean worldHop;
     private boolean worldHopRandom;
+    private boolean worldHopNoResources;
     private double worldHopFactor;
 
     private Workable.PickAxe desiredPickaxe;
-    private List<MotherlodeMine> motherlodeWork;
-    private List<Mining> miningWork;
+
+    private List<MotherlodeMine> motherlodeWork = new ArrayList<>();
+    private List<Mining> miningWork = new ArrayList<>();
+    private List<Work> work = new ArrayList<>();
 
     public MotherlodeMineXSettings() {}
 
@@ -137,6 +142,14 @@ public class MotherlodeMineXSettings {
         this.worldHopRandom = worldHopRandom;
     }
 
+    public boolean isWorldHopNoResources() {
+        return worldHopNoResources;
+    }
+
+    public void setWorldHopNoResources(boolean worldHopNoResources) {
+        this.worldHopNoResources = worldHopNoResources;
+    }
+
     public double getWorldHopFactor() {
         return worldHopFactor;
     }
@@ -169,6 +182,14 @@ public class MotherlodeMineXSettings {
         this.miningWork = miningWork;
     }
 
+    public List<Work> getWork() {
+        return work;
+    }
+
+    public void setWork(List<Work> work) {
+        this.work = work;
+    }
+
     @Override
     public String toString() {
         return "MotherlodeMineXSettings{" +
@@ -185,10 +206,12 @@ public class MotherlodeMineXSettings {
                 ", useCoalBag=" + useCoalBag +
                 ", worldHop=" + worldHop +
                 ", worldHopRandom=" + worldHopRandom +
+                ", worldHopNoResources=" + worldHopNoResources +
                 ", worldHopFactor=" + worldHopFactor +
                 ", desiredPickaxe=" + desiredPickaxe +
                 ", motherlodeWork=" + motherlodeWork +
                 ", miningWork=" + miningWork +
+                ", work=" + work +
                 '}';
     }
 }

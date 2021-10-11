@@ -12,6 +12,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import org.tribot.script.sdk.util.ScriptSettings;
+import org.tribot.script.sdk.util.serialization.PolymorphicAdapter;
 import scripts.MotherlodeMineXSettings;
 import scripts.MotherlodeMineXVariables;
 import scripts.api.*;
@@ -20,6 +21,7 @@ import scripts.api.enums.ResourceLocation;
 import scripts.api.enums.ResourceOption;
 import scripts.api.enums.WorkType;
 import scripts.api.interfaces.Workable;
+import scripts.api.works.Mining;
 import scripts.api.works.MotherlodeMine;
 import scripts.api.works.Work;
 
@@ -33,8 +35,8 @@ import java.net.URL;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.*;
-import java.util.List;
 
+import static scripts.api.enums.WorkType.MINING;
 import static scripts.api.enums.WorkType.MOTHERLODE_MINE;
 
 @DoNotRename
@@ -265,11 +267,19 @@ public class Controller implements Initializable {
 
     @FXML
     @DoNotRename
+    private CheckBox checkBoxNoResourcesWorldHop;
+
+    @FXML
+    @DoNotRename
     private Label labelWorldControlPlayerCount;
 
     @FXML
     @DoNotRename
     private Label labelWorldControl;
+
+    @FXML
+    @DoNotRename
+    private Label labelWorldControlNoResources;
 
     @FXML
     @DoNotRename
@@ -356,6 +366,9 @@ public class Controller implements Initializable {
         // discord channel
         onActionHyperLinkDiscordChannel();
 
+        // forum link
+        onActionHyperLinkForum();
+
         // init tooltips
         getRadioButtonShuffleRepeat().setTooltip(new Tooltip("Will shuffle and repeat the script once all work is completed"));
         getRadioButtonRepeat().setTooltip(new Tooltip("Will repeat the script once all work is completed"));
@@ -370,7 +383,11 @@ public class Controller implements Initializable {
     @DoNotRename
     private void onActionChoiceBoxWorkType() {
         getChoiceBoxWorkType().setOnAction(actionEvent -> {
-            WorkType workType = getChoiceBoxWorkType().getSelectionModel()
+            getChoiceBoxResourceLocation().getItems().clear();
+            getChoiceBoxResourceOption().getItems().clear();
+
+            WorkType workType = getChoiceBoxWorkType()
+                    .getSelectionModel()
                     .getSelectedItem();
 
             reviseResource(workType);
@@ -384,6 +401,8 @@ public class Controller implements Initializable {
     @DoNotRename
     private void onActionChoiceBoxResource() {
         getChoiceBoxResource().setOnAction(actionEvent -> {
+
+
             Resource resource = getChoiceBoxResource().getSelectionModel()
                     .getSelectedItem();
 
@@ -403,12 +422,17 @@ public class Controller implements Initializable {
 
             ObservableList<ResourceOption> list = getChoiceBoxResourceOption().getItems();
 
-            if (list.isEmpty()) {
-                list.add(ResourceOption.BANK);
-            }
-
-            if (resourceLocation.toString().toLowerCase(Locale.ROOT).contains("mother")) {
-                list.clear();
+            if (resourceLocation != null) {
+                if (list != null) {
+                    if (!list.isEmpty()) {
+                        list.clear();
+                    }
+                    boolean isMotherlodeMine = resourceLocation.equals(ResourceLocation.MOTHERLODE_MINE_UPPER_LEVEL);
+                    if (!isMotherlodeMine) {
+                        list.add(ResourceOption.BANK);
+                        list.add(ResourceOption.DROP);
+                    }
+                }
             }
         });
     }
@@ -544,13 +568,17 @@ public class Controller implements Initializable {
                 String stoppingCondition = getTextFieldStoppingCondition().getText();
                 Work work = null;
                 if (getRadioButtonLevel().isSelected()) {
-                    if (type == MOTHERLODE_MINE) {
+                    if (type.equals(MOTHERLODE_MINE)) {
                         work = new MotherlodeMine(resource, resourceLocation, resourceOption, Integer.parseInt(stoppingCondition));
+                    } else if (type.equals(MINING)) {
+                        work = new Mining(resource, resourceLocation, resourceOption, Integer.parseInt(stoppingCondition));
                     }
                 } else {
                     TimeElapse time = new TimeElapse(stoppingCondition);
-                    if (type == MOTHERLODE_MINE) {
+                    if (type.equals(MOTHERLODE_MINE)) {
                         work = new MotherlodeMine(resource, resourceLocation, resourceOption, time);
+                    } else if (type.equals(MINING)) {
+                        work = new Mining(resource, resourceLocation, resourceOption, time);
                     }
                 }
                 if (work != null) {
@@ -566,26 +594,36 @@ public class Controller implements Initializable {
     private void onActionButtonUpdateWork() {
         getButtonUpdateWork().setOnAction(actionEvent -> {
             Work work = getTableViewCore().getSelectionModel().getSelectedItem();
+            int indexOf = getTableViewCore().getItems().indexOf(work);
             if (validateWorkState() && work != null) {
                 WorkType type = getChoiceBoxWorkType().getSelectionModel().getSelectedItem();
                 Resource resource = getChoiceBoxResource().getSelectionModel().getSelectedItem();
                 ResourceLocation resourceLocation = getChoiceBoxResourceLocation().getSelectionModel().getSelectedItem();
                 ResourceOption resourceOption = getChoiceBoxResourceOption().getSelectionModel().getSelectedItem();
                 String stoppingCondition = getTextFieldStoppingCondition().getText();
-                    if (type == MOTHERLODE_MINE) {
-                        Work motherlode = new MotherlodeMine(resource, resourceLocation, resourceOption);
-                        work.setResource(motherlode.getResource());
-                        work.setResourceLocation(motherlode.getResourceLocation());
-                        work.setResourceOption(motherlode.getResourceOption());
-                        work.setBankLocation(motherlode.getBankLocation());
-                    }
+                // remove work
+                getTableViewCore().getItems().remove(work);
+                if (type.equals(MOTHERLODE_MINE)) {
+                    MotherlodeMine motherlode = new MotherlodeMine(resource, resourceLocation, resourceOption);
                     if (getRadioButtonLevel().isSelected()) {
-                        work.setLevel(Integer.parseInt(stoppingCondition));
-                        work.setTime(null);
+                        motherlode.setLevel(Integer.parseInt(stoppingCondition));
+                        motherlode.setTime(null);
                     } else {
-                        work.setTime(new TimeElapse(stoppingCondition));
-                        work.setLevel(0);
+                        motherlode.setTime(new TimeElapse(stoppingCondition));
+                        motherlode.setLevel(0);
                     }
+                    getTableViewCore().getItems().add(indexOf, motherlode);
+                } else if (type.equals(MINING)) {
+                    Work mining = new Mining(resource, resourceLocation, resourceOption);
+                    if (getRadioButtonLevel().isSelected()) {
+                        mining.setLevel(Integer.parseInt(stoppingCondition));
+                        mining.setTime(null);
+                    } else {
+                        mining.setTime(new TimeElapse(stoppingCondition));
+                        mining.setLevel(0);
+                    }
+                    getTableViewCore().getItems().add(indexOf, mining);
+                }
                 getTableViewCore().refresh();
                 System.out.println("[GUI] Updated: " + work);
             }
@@ -609,14 +647,21 @@ public class Controller implements Initializable {
     @DoNotRename
     private void onActionButtonSaveSettings() {
         getButtonSaveWork().setOnAction(actionEvent -> {
+            // polymorphic handler
+            PolymorphicAdapter<MotherlodeMineXSettings> polymorphicAdapter = new PolymorphicAdapter<>();
             // settings handler
             ScriptSettings settingsHandler = ScriptSettings.getDefault();
             // the settings
             MotherlodeMineXSettings settings = new MotherlodeMineXSettings();
-            // work converted to list
-            List<MotherlodeMine> list = Arrays.asList(getTableViewCore().getItems().toArray(MotherlodeMine[]::new));
+            // downcast the work appropriately
+            for (Work work : getTableViewCore().getItems()) {
+                if (work instanceof MotherlodeMine) {
+                    settings.getMotherlodeWork().add((MotherlodeMine) work);
+                } else {
+                    settings.getMiningWork().add((Mining) work);
+                }
+            }
             // set the settings from gui
-            settings.setMotherlodeWork(list);
             settings.setRepeat(getRadioButtonRepeat().isSelected());
             settings.setRepeatShuffle(getRadioButtonShuffleRepeat().isSelected());
             settings.setDoNotRepeat(getRadioButtonDoNotRepeat().isSelected());
@@ -631,11 +676,15 @@ public class Controller implements Initializable {
             settings.setAntiBanSeed(getTextFieldAntiBanSeed().getText());
             settings.setWorldHop(getCheckBoxWorldHopPlayerCount().isSelected());
             settings.setWorldHopRandom(getCheckBoxRandomWorldHop().isSelected());
+            settings.setWorldHopNoResources(getCheckBoxNoResourcesWorldHop().isSelected());
             settings.setWorldHopFactor(getSliderWorldHopPlayerCount().getValue());
             // file chooser - save settings file
             FileChooser fileChooser = new FileChooser();
             FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter(".json", "*.json");
             fileChooser.getExtensionFilters().add(extensionFilter);
+            if (!settingsHandler.getDirectory().exists()) {
+                settingsHandler.getDirectory().mkdirs();
+            }
             fileChooser.setInitialDirectory(settingsHandler.getDirectory());
             fileChooser.setTitle("Save settings");
             // show save file
@@ -661,6 +710,9 @@ public class Controller implements Initializable {
             FileChooser fileChooser = new FileChooser();
             FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter(".json", "*.json");
             fileChooser.getExtensionFilters().add(extensionFilter);
+            if (!settingsHandler.getDirectory().exists()) {
+                settingsHandler.getDirectory().mkdirs();
+            }
             fileChooser.setInitialDirectory(settingsHandler.getDirectory());
             fileChooser.setTitle("Load settings");
             // show save file
@@ -670,10 +722,9 @@ public class Controller implements Initializable {
                 settingsHandler.load(file.getName(), MotherlodeMineXSettings.class)
                         .ifPresent(settings -> {
                             System.out.println("[GUI] Loaded settings: " + settings);
-                            ObservableList<Work> workList = getTableViewCore().getItems();
-                            workList.clear();
-
-                            workList.addAll(settings.getMotherlodeWork());
+                            getTableViewCore().getItems().clear();
+                            getTableViewCore().getItems().addAll(settings.getMotherlodeWork());
+                            getTableViewCore().getItems().addAll(settings.getMiningWork());
                             getRadioButtonShuffleRepeat().setSelected(settings.isRepeatShuffle());
                             getRadioButtonRepeat().setSelected(settings.isRepeat());
                             getRadioButtonDoNotRepeat().setSelected(settings.isDoNotRepeat());
@@ -686,7 +737,7 @@ public class Controller implements Initializable {
                             getCheckBoxAntiBanSeed().setSelected(settings.isUseAntiBanSeed());
                             getCheckBoxWorldHopPlayerCount().setSelected(settings.isWorldHop());
                             getCheckBoxRandomWorldHop().setSelected(settings.isWorldHopRandom());
-
+                            getCheckBoxNoResourcesWorldHop().setSelected(settings.isWorldHopNoResources());
                             getComboBoxSpecificPickAxe().getSelectionModel().select(settings.getDesiredPickaxe());
                             getTextFieldAntiBanSeed().setText(settings.getAntiBanSeed());
                             getSliderWorldHopPlayerCount().setValue(settings.getWorldHopFactor());
@@ -700,11 +751,16 @@ public class Controller implements Initializable {
     private void onActionButtonStart() {
         getButtonStart().setOnAction(actionEvent -> {
             MotherlodeMineXSettings settings = MotherlodeMineXVariables.get().getSettings();
-
-            // work converted to list
-            List<MotherlodeMine> list = Arrays.asList(getTableViewCore().getItems().toArray(MotherlodeMine[]::new));
             // set the settings from gui
-            settings.setMotherlodeWork(list);
+            for (Work work : getTableViewCore().getItems()) {
+                if (work instanceof MotherlodeMine) {
+                    settings.getMotherlodeWork().add((MotherlodeMine) work);
+                } else {
+                    settings.getMiningWork().add((Mining) work);
+                }
+            }
+            settings.getWork().addAll(settings.getMotherlodeWork());
+            settings.getWork().addAll(settings.getMiningWork());
             settings.setRepeat(getRadioButtonRepeat().isSelected());
             settings.setRepeatShuffle(getRadioButtonShuffleRepeat().isSelected());
             settings.setDoNotRepeat(getRadioButtonDoNotRepeat().isSelected());
@@ -719,8 +775,8 @@ public class Controller implements Initializable {
             settings.setAntiBanSeed(getTextFieldAntiBanSeed().getText());
             settings.setWorldHop(getCheckBoxWorldHopPlayerCount().isSelected());
             settings.setWorldHopRandom(getCheckBoxRandomWorldHop().isSelected());
+            settings.setWorldHopNoResources(getCheckBoxNoResourcesWorldHop().isSelected());
             settings.setWorldHopFactor(getSliderWorldHopPlayerCount().getValue());
-
             if (getTableViewCore().getItems().isEmpty()) {
                 System.out.println("[GUI] Please add work before starting.");
             } else {
@@ -779,16 +835,39 @@ public class Controller implements Initializable {
         });
     }
 
-    @DoNotRename
     @FXML
+    @DoNotRename
+    private void onActionHyperLinkForum() {
+        getHyperLinkForum().setOnAction(actionEvent -> {
+            try {
+                Desktop.getDesktop().browse(new URI("https://community.tribot.org/topic/84014-tribot-sdk-motherlode-mine-x-abc2work-basedfatigue-systempickaxe-upgradingworld-hopping/"));
+            } catch (IOException | URISyntaxException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    @DoNotRename
     private void reviseResource(WorkType workType) {
         ObservableList<Resource> resourceList = getChoiceBoxResource().getItems();
         resourceList.clear();
+        getChoiceBoxResourceLocation().getItems().clear();
 
         if (workType != null) {
             switch (workType) {
                 case MOTHERLODE_MINE:
                     resourceList.add(Resource.ORE_VEIN);
+                    break;
+                case MINING:
+                    resourceList.add(Resource.CLAY_ROCK);
+                    resourceList.add(Resource.TIN_ROCK);
+                    resourceList.add(Resource.COPPER_ROCK);
+                    resourceList.add(Resource.IRON_ROCK);
+                    resourceList.add(Resource.SILVER_ROCK);
+                    resourceList.add(Resource.COAL_ROCK);
+                    resourceList.add(Resource.GOLD_ROCK);
+                    resourceList.add(Resource.MITHRIL_ROCK);
+                    resourceList.add(Resource.ADAMANTITE_ROCK);
             }
         }
     }
@@ -806,9 +885,44 @@ public class Controller implements Initializable {
                     list.add(ResourceLocation.MOTHERLODE_MINE_LOWER_LEVEL_FAR_NORTH_EAST);
                     list.add(ResourceLocation.MOTHERLODE_MINE_LOWER_LEVEL_MIDDLE_NORTH_EAST);
                     list.add(ResourceLocation.MOTHERLODE_MINE_LOWER_LEVEL_SOUTH_WEST);
+                    break;
+                case CLAY_ROCK:
+                    list.add(ResourceLocation.MINING_VARROCK_SOUTH_WEST);
+                    list.add(ResourceLocation.MINING_RIMMINGTON);
+                    break;
+                case COPPER_ROCK:
+                    list.add(ResourceLocation.MINING_LUMBRIDGE_SWAMP);
+                    list.add(ResourceLocation.MINING_VARROCK_SOUTH_EAST);
+                    break;
+                case TIN_ROCK:
+                    list.add(ResourceLocation.MINING_LUMBRIDGE_SWAMP);
+                    list.add(ResourceLocation.MINING_VARROCK_SOUTH_WEST);
+                    list.add(ResourceLocation.MINING_VARROCK_SOUTH_EAST);
+                    list.add(ResourceLocation.MINING_BARBARIAN_VILLAGE);
+                    list.add(ResourceLocation.MINING_RIMMINGTON);
+                    break;
+                case IRON_ROCK:
+                    list.add(ResourceLocation.MINING_VARROCK_SOUTH_WEST);
+                    list.add(ResourceLocation.MINING_VARROCK_SOUTH_EAST);
+                    list.add(ResourceLocation.MINING_RIMMINGTON);
+                    break;
+                case SILVER_ROCK:
+                    list.add(ResourceLocation.MINING_VARROCK_SOUTH_WEST);
+                    break;
+                case COAL_ROCK:
+                    list.add(ResourceLocation.MINING_VARROCK_SOUTH_WEST);
+                    list.add(ResourceLocation.MINING_RIMMINGTON);
+                    break;
+                case GOLD_ROCK:
+                    list.add(ResourceLocation.MINING_RIMMINGTON);
+                    break;
+                case MITHRIL_ROCK:
+                    list.add(ResourceLocation.MINING_LUMBRIDGE_SOUTH_WEST);
+                    break;
+                case ADAMANTITE_ROCK:
+                    list.add(ResourceLocation.MINING_LUMBRIDGE_SOUTH_WEST);
             }
         }
-
     }
 
     @DoNotRename
@@ -1513,6 +1627,18 @@ public class Controller implements Initializable {
 
     @FXML
     @DoNotRename
+    public CheckBox getCheckBoxNoResourcesWorldHop() {
+        return checkBoxNoResourcesWorldHop;
+    }
+
+    @FXML
+    @DoNotRename
+    public void setCheckBoxNoResourcesWorldHop(CheckBox checkBoxNoResourcesWorldHop) {
+        this.checkBoxNoResourcesWorldHop = checkBoxNoResourcesWorldHop;
+    }
+
+    @FXML
+    @DoNotRename
     public Label getLabelWorldControl() {
         return labelWorldControl;
     }
@@ -1521,6 +1647,18 @@ public class Controller implements Initializable {
     @DoNotRename
     public void setLabelWorldControl(Label labelWorldControl) {
         this.labelWorldControl = labelWorldControl;
+    }
+
+    @FXML
+    @DoNotRename
+    public Label getLabelWorldControlNoResources() {
+        return labelWorldControlNoResources;
+    }
+
+    @FXML
+    @DoNotRename
+    public void setLabelWorldControlNoResources(Label labelWorldControlNoResources) {
+        this.labelWorldControlNoResources = labelWorldControlNoResources;
     }
 
     @FXML

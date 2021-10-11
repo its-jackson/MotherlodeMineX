@@ -52,7 +52,6 @@ public class MotherlodeMine extends Work {
             case MOTHERLODE_MINE_LOWER_LEVEL_NORTH:
             case MOTHERLODE_MINE_UPPER_LEVEL:
                 setBankLocation(RunescapeBank.MOTHERLOAD);
-                break;
         }
     }
 }

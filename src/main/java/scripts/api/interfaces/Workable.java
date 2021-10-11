@@ -6,6 +6,7 @@ import org.tribot.api2007.types.RSTile;
 import org.tribot.api2007.types.RSVarBit;
 import org.tribot.script.sdk.*;
 import org.tribot.script.sdk.cache.BankCache;
+import org.tribot.script.sdk.interfaces.Item;
 import org.tribot.script.sdk.query.Query;
 import org.tribot.script.sdk.types.*;
 import org.tribot.script.sdk.walking.GlobalWalking;
@@ -26,24 +27,6 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface Workable {
-
-    enum State {
-        MINING_ORE_VEIN("Mining ore vein"),
-        LOCATING_ORE_VEIN("Locating ore vein"),
-        LOCATING_ORE_VEIN_SUCCESS("Located ore vein successful"),
-        CLICK_ORE_VEIN_SUCCESS("Clicked ore vein successful")
-        ;
-
-        private final String state;
-
-        State(String state) {
-            this.state = state;
-        }
-
-        public String getState() {
-            return state;
-        }
-    }
 
     enum PickAxe {
         BRONZE_PICKAXE(1265, 1),
@@ -254,7 +237,7 @@ public interface Workable {
      */
     default boolean workerIsInLocation(Work work) {
         return work.getResourceLocation()
-                .getArea()
+                .getPolymorphicArea()
                 .containsMyPlayer();
     }
 
@@ -263,15 +246,17 @@ public interface Workable {
      * @return True if the resource was clicked successfully; false otherwise
      */
     default boolean interactGameObject(GameObject resource) {
-        // focus camera
-        boolean focusGameObjectResult = resource.adjustCameraTo();
         // walk result if not visible
         boolean walkResult;
         // not visible, walk to gameObject
         if (!resource.isVisible()) {
-            walkResult = walkToTile(resource.getTile());
-            if (walkResult) {
-                Waiting.waitUntil(resource::isVisible);
+            // focus camera
+            boolean focusGameObjectResult = resource.adjustCameraTo();
+            if (!focusGameObjectResult) {
+                walkResult = walkToTile(resource.getTile());
+                if (walkResult) {
+                    Waiting.waitUntil(resource::isVisible);
+                }
             }
         }
         // find all viable resource actions such as "Mine"
@@ -282,6 +267,18 @@ public interface Workable {
         }
         // interact using the first action available such as "Mine" or "Chop" etc
         return resource.interact(actions.get(0));
+    }
+
+    default Optional<GameObject> locateGameObject(Work work) {
+        return Query.gameObjects()
+                .idEquals(work.getResource().getResourceIDS())
+                .maxDistance(15.00)
+                .filter(gameObject -> work
+                        .getResourceLocation()
+                        .getPolymorphicArea()
+                        .getWorldTiles()
+                        .contains(gameObject.getTile()))
+                .findBestInteractable();
     }
 
     default boolean inventoryIsReadyMotherlode(PickAxe pickAxe) {
@@ -453,7 +450,7 @@ public interface Workable {
         return Query.gameObjects()
                 .maxDistance(7.00)
                 .idEquals(HOPPER_ID)
-                .isAny() && !ResourceLocation.MOTHERLODE_MINE_UPPER_LEVEL.getArea().containsMyPlayer();
+                .isAny() && !ResourceLocation.MOTHERLODE_MINE_UPPER_LEVEL.getPolymorphicArea().containsMyPlayer();
     }
 
     default boolean isAtBrokenStruts() {
@@ -508,13 +505,46 @@ public interface Workable {
     }
 
     /**
+     * Deposit all except pickaxe
+     *
+     * @return The count of deposited items
+     */
+    default int depositAllMining(PickAxe pickaxe) {
+        if (pickaxe != null) {
+            return Banking.depositAllExcept(pickaxe.getPickAxeId());
+        } else {
+            return Banking.depositAll();
+        }
+    }
+
+    /**
+     * Drop all ores currently inside the inventory
+     * @return The count of all ores drop
+     */
+    default int dropInventoryMining() {
+        List<InventoryItem> ores = Query.inventory()
+                .nameContains("ore", "Coal")
+                .toList();
+
+        return Inventory.drop(ores);
+    }
+
+    /**
      * Will perform the special attack if fully charged
      *
      * @return True if able to perform special attack; false otherwise
      */
     default boolean performSpecialAttack() {
-        if (Combat.getSpecialAttackPercent() == 100 && !Combat.isSpecOrbDisabled() && Combat.isSpecialAttackEnabled()) {
-            return Combat.activateSpecialAttack();
+        if (Equipment.contains(PickAxe.DRAGON_PICKAXE.getPickAxeId(), PickAxe.DRAGON_PICKAXE_UPGRADED.getPickAxeId(),
+                PickAxe.DRAGON_PICKAXE_OR.pick_axe_id, PickAxe.INFERNAL_PICKAXE.getPickAxeId(), PickAxe.INFERNAL_PICKAXE_OR.getPickAxeId(),
+                PickAxe.INFERNAL_PICKAXE_UNCHARGED.getPickAxeId(), PickAxe.CRYSTAL_PICKAXE_UNCHARGED.getPickAxeId(), PickAxe.CRYSTAL_PICKAXE.getPickAxeId(),
+                PickAxe.TRAILBLAZER_PICKAXE.getPickAxeId())) {
+            if (Combat.getSpecialAttackPercent() == 100) {
+                if (!Combat.isSpecOrbDisabled()) {
+                    Waiting.waitUniform(1000, 13000);
+                    return Combat.activateSpecialAttack();
+                }
+            }
         }
         return false;
     }
@@ -738,6 +768,16 @@ public interface Workable {
                 .ifPresent(inventoryItem -> inventoryItem.click("Open"));
 
         return Waiting.waitUntil(() -> Inventory.contains(COAL_BAG_OPEN));
+    }
+
+    default int calculateGoldGained() {
+        return Inventory.getAll()
+                .stream()
+                .filter(inventoryItem -> inventoryItem.getName().contains("ore") || inventoryItem.getName().contains("Coal"))
+                .map(Item::lookupPrice)
+                .filter(Optional::isPresent)
+                .mapToInt(Optional::get)
+                .sum();
     }
 
     /**
