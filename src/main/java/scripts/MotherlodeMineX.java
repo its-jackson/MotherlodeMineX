@@ -23,6 +23,7 @@ import scripts.gui.GUIFX;
 import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -255,6 +256,9 @@ public class MotherlodeMineX implements TribotScript {
                             Waiting.waitUniform(100, 300);
                         }
                         Log.log("Work complete. Please be patient.");
+                    }
+                    if (MotherlodeMineXVariables.get().getSettings().isRepeatShuffle()) {
+                        Collections.shuffle(MotherlodeMineXVariables.get().getSettings().getWork());
                     }
                 }
                 // keep repeating the script if necessary
