@@ -1,10 +1,7 @@
 package scripts.api.nodes.shared;
 
 
-import org.tribot.script.sdk.Bank;
-import org.tribot.script.sdk.Equipment;
-import org.tribot.script.sdk.Inventory;
-import org.tribot.script.sdk.Waiting;
+import org.tribot.script.sdk.*;
 
 import org.tribot.script.sdk.tasks.BankTask;
 
@@ -51,12 +48,13 @@ public class RetrievePickAxeFromBank implements Nodeable, Workable {
         // bank is open
         if (Bank.isOpen()) {
             // deposit all items
-            depositAllMotherlodeMine(Worker.getInstance().getPickaxe());
+            int firstDeposit = depositAllMotherlodeMine(Worker.getInstance().getPickaxe());
+            if (firstDeposit > 0) {
+                log("Cleaned inventory");
+            }
             // calculate optimal pickaxe
-            if (!MotherlodeMineXVariables.get().getSettings().isDoNotUpgrade()) {
-                Workable.calculateOptimalPickAxeInBank(
-                                Worker.getInstance()
-                                        .getActualMiningLevel())
+            if (!getVariables().getSettings().isDoNotUpgrade()) {
+                Workable.calculateOptimalPickAxeInBank(Skill.MINING.getActualLevel())
                         .ifPresent(this::setWorkerOptimalPickaxe);
             } else {
                 setWorkerOptimalPickaxe(Worker.getInstance().getPickaxe());
@@ -72,14 +70,21 @@ public class RetrievePickAxeFromBank implements Nodeable, Workable {
                                 String equipping = "Equipping " + getWorkerOptimalPickaxe();
                                 log(equipping);
                                 getVariables().setState(equipping);
-                                Equipment.equip(getWorkerOptimalPickaxe().getPickAxeId());
+                                if (Equipment.equip(getWorkerOptimalPickaxe().getPickAxeId())) {
+                                    // deposit all except the required pickaxe and mining tools
+                                    boolean equipResult = Waiting.waitUntil(3000, () -> Equipment.contains(getWorkerOptimalPickaxe().getPickAxeId()));
+                                    if (equipResult) {
+                                        int lastDepositCount = depositAllMotherlodeMine(getWorkerOptimalPickaxe());
+                                        if (lastDepositCount > 0) {
+                                            log("Deposited inventory items");
+                                        }
+                                    }
+                                }
                             } else {
                                 String addingInv = "Adding inventory " + getWorkerOptimalPickaxe();
                                 log(addingInv);
                                 getVariables().setState(addingInv);
                             }
-                            // deposit all except the required pickaxe and mining tools
-                            depositAllMotherlodeMine(getWorkerOptimalPickaxe());
                             // set the pickaxe to the worker instance
                             Worker.getInstance().setPickaxe(getWorkerOptimalPickaxe());
                         }
@@ -87,7 +92,7 @@ public class RetrievePickAxeFromBank implements Nodeable, Workable {
                 }
             } else {
                 // No pickaxe inside the bank
-                log("No pickaxe available - please have a pickaxe inside your bank");
+                throw new RuntimeException("No pickaxe available - please have a pickaxe inside your bank");
             }
         }
 

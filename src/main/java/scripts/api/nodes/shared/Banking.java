@@ -27,7 +27,7 @@ public class Banking implements Nodeable, Workable {
 
     @Override
     public void execute() {
-        int sleepTime = AntiBan.sleep(MotherlodeMineXVariables.get().getWaitTimes());
+        int sleepTime = AntiBan.sleep(getVariables().getWaitTimes());
 
         String depositing = "Depositing inventory";
         boolean bankingResult = false;

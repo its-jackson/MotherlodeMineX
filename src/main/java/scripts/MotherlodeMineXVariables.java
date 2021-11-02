@@ -27,12 +27,12 @@ public class MotherlodeMineXVariables {
     private boolean optimization;
 
     private final Image img = Objects.requireNonNull(getImage("https://jacksonjohnson.ca/motherlodeminex/Full_paint_motherlode_mine_x.png"))
-            .getScaledInstance(520, 160, Image.SCALE_SMOOTH);
+            .getScaledInstance(520, 167, Image.SCALE_SMOOTH);
 
     private final RenderingHints anti_aliasing = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     private final Font main_font = new Font("Verdana", Font.BOLD, 12);
     private final Font secondary_font = new Font("Verdana", Font.PLAIN, 11);
-    private final Color progress_colour_background = new Color(0, 0, 0, 0.5F);
+    private final Color progress_colour_background = new Color(0, 0, 0, 0.8F);
     private final Color main_font_colour = new Color(22, 196, 219);
 
     public MotherlodeMineXVariables() {}

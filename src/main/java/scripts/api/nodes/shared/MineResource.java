@@ -3,8 +3,10 @@ package scripts.api.nodes.shared;
 import org.tribot.api2007.PathFinding;
 import org.tribot.api2007.types.RSTile;
 import org.tribot.script.sdk.*;
+import org.tribot.script.sdk.painting.Painting;
 import org.tribot.script.sdk.query.Query;
 import org.tribot.script.sdk.types.GameObject;
+import org.tribot.script.sdk.types.Model;
 import org.tribot.script.sdk.types.WorldTile;
 import scripts.MotherlodeMineXVariables;
 import scripts.api.enums.ResourceLocation;
@@ -186,6 +188,7 @@ public class MineResource implements Nodeable, Workable {
     private void completeMiningTask(Work work) {
         // state
         String miningResource = "Mining " + getWork().getResource();
+
          // set world hop node
         getVariables()
                 .getNodes()
@@ -193,6 +196,7 @@ public class MineResource implements Nodeable, Workable {
                 .filter(node -> node instanceof WorldHop)
                 .findFirst()
                 .ifPresent(node -> setWorldHop((WorldHop) node));
+
         // set profit before
         int goldGainedBefore = calculateGoldGained();
 
@@ -224,6 +228,14 @@ public class MineResource implements Nodeable, Workable {
             // set gold gained by subtraction
             Worker.getInstance().setGoldGained(goldGainedAfter - goldGainedBefore);
         }
+
+        // remove paint for game object
+        Painting.removePaint(graphics2D -> {
+            getCurrentResource()
+                    .getModel()
+                    .flatMap(Model::getBounds)
+                    .ifPresent(graphics2D::drawPolygon);
+        });
     }
 
     private void performLoopingChecks() {

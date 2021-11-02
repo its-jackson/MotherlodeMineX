@@ -1,11 +1,9 @@
 package scripts;
 
 import scripts.api.interfaces.Workable;
-import scripts.api.works.Mining;
-import scripts.api.works.MotherlodeMine;
 import scripts.api.works.Work;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class MotherlodeMineXSettings {
@@ -32,9 +30,7 @@ public class MotherlodeMineXSettings {
 
     private Workable.PickAxe desiredPickaxe;
 
-    private List<MotherlodeMine> motherlodeWork = new ArrayList<>();
-    private List<Mining> miningWork = new ArrayList<>();
-    private List<Work> work = new ArrayList<>();
+    private List<Work> work = new LinkedList<>();
 
     public MotherlodeMineXSettings() {}
 
@@ -166,22 +162,6 @@ public class MotherlodeMineXSettings {
         this.desiredPickaxe = desiredPickaxe;
     }
 
-    public List<MotherlodeMine> getMotherlodeWork() {
-        return motherlodeWork;
-    }
-
-    public void setMotherlodeWork(List<MotherlodeMine> motherlodeWork) {
-        this.motherlodeWork = motherlodeWork;
-    }
-
-    public List<Mining> getMiningWork() {
-        return miningWork;
-    }
-
-    public void setMiningWork(List<Mining> miningWork) {
-        this.miningWork = miningWork;
-    }
-
     public List<Work> getWork() {
         return work;
     }
@@ -209,8 +189,6 @@ public class MotherlodeMineXSettings {
                 ", worldHopNoResources=" + worldHopNoResources +
                 ", worldHopFactor=" + worldHopFactor +
                 ", desiredPickaxe=" + desiredPickaxe +
-                ", motherlodeWork=" + motherlodeWork +
-                ", miningWork=" + miningWork +
                 ", work=" + work +
                 '}';
     }

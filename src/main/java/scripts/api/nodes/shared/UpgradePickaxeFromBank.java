@@ -1,9 +1,6 @@
 package scripts.api.nodes.shared;
 
-import org.tribot.script.sdk.Bank;
-import org.tribot.script.sdk.Equipment;
-import org.tribot.script.sdk.Inventory;
-import org.tribot.script.sdk.Waiting;
+import org.tribot.script.sdk.*;
 import org.tribot.script.sdk.cache.BankCache;
 import scripts.MotherlodeMineXVariables;
 import scripts.api.works.Work;
@@ -26,14 +23,13 @@ public class UpgradePickaxeFromBank implements Nodeable, Workable {
 
     @Override
     public void execute() {
-        MotherlodeMineXVariables vars = MotherlodeMineXVariables.get();
-        int sleepTime = AntiBan.sleep(vars.getWaitTimes());
+        int sleepTime = AntiBan.sleep(getVariables().getWaitTimes());
         String upgrading = "Upgrading pickaxe";
 
         log(upgrading);
         getVariables().setState(upgrading);
         // calculate the better pickaxe
-        Optional<PickAxe> betterPickAxe = workerHasBetterPickAxe(Worker.getInstance().getActualMiningLevel(), Worker.getInstance().getPickaxe());
+        Optional<PickAxe> betterPickAxe = workerHasBetterPickAxe(Skill.MINING.getActualLevel(), Worker.getInstance().getPickaxe());
         if (betterPickAxe.isPresent()) {
             PickAxe bankBetterPickAxe = betterPickAxe.get();
             int bankBetterPickAxeId = bankBetterPickAxe.getPickAxeId();
@@ -69,7 +65,7 @@ public class UpgradePickaxeFromBank implements Nodeable, Workable {
         if (BankCache.isInitialized()) {
            log("Bank initialized");
            if (!MotherlodeMineXVariables.get().getSettings().isDoNotUpgrade()) {
-               if (workerHasBetterPickAxe(Worker.getInstance().getActualMiningLevel(), Worker.getInstance().getPickaxe())
+               if (workerHasBetterPickAxe(Skill.MINING.getActualLevel(), Worker.getInstance().getPickaxe())
                        .isPresent()) {
                    return Bank.isNearby() && Bank.isOpen();
                }

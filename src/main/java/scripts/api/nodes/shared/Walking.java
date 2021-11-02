@@ -2,10 +2,7 @@ package scripts.api.nodes.shared;
 
 import org.tribot.api2007.PathFinding;
 import org.tribot.api2007.types.RSTile;
-import org.tribot.script.sdk.Bank;
-import org.tribot.script.sdk.Inventory;
-import org.tribot.script.sdk.MyPlayer;
-import org.tribot.script.sdk.Waiting;
+import org.tribot.script.sdk.*;
 import org.tribot.script.sdk.cache.BankCache;
 import org.tribot.script.sdk.query.Query;
 import org.tribot.script.sdk.types.Area;
@@ -52,8 +49,8 @@ public class Walking implements Nodeable, Workable {
 
     @Override
     public void execute() {
-        MotherlodeMineXVariables vars = MotherlodeMineXVariables.get();
-        int sleepTime = AntiBan.sleep(vars.getWaitTimes());
+
+        int sleepTime = AntiBan.sleep(getVariables().getWaitTimes());
 
         String walkingToBank = "Walking to bank";
         String walkingToBankPickaxe = "Walking to bank - retrieving pickaxe";
@@ -381,7 +378,7 @@ public class Walking implements Nodeable, Workable {
         if (BankCache.isInitialized()) {
             log("Bank initialized");
             if (!MotherlodeMineXVariables.get().getSettings().isDoNotUpgrade()) {
-                if (workerHasBetterPickAxe(Worker.getInstance().getActualMiningLevel(), Worker.getInstance().getPickaxe())
+                if (workerHasBetterPickAxe(Skill.MINING.getActualLevel(), Worker.getInstance().getPickaxe())
                         .isPresent()) {
                     if (!isAtBank(getWork().getBankLocation())) {
                         setWalkToBankUpgradeAxe(true);

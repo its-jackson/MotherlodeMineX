@@ -23,8 +23,7 @@ public class RetrieveMotherlodeEquipment implements Nodeable, Workable {
 
     @Override
     public void execute() {
-        MotherlodeMineXVariables vars = MotherlodeMineXVariables.get();
-        int sleepTime = AntiBan.sleep(vars.getWaitTimes());
+        int sleepTime = AntiBan.sleep(getVariables().getWaitTimes());
 
         String retrievingEquipment = "Retrieving equipment";
         log(retrievingEquipment);
@@ -35,6 +34,9 @@ public class RetrieveMotherlodeEquipment implements Nodeable, Workable {
                 walkToBank(getWork().getBankLocation());
             }
         }
+
+        // last time i checked the bank task doesn't function
+        // if the items don't exist in the players bank
         if (Bank.isOpen()) {
             depositAllMotherlodeMine(Worker.getInstance().getPickaxe());
 

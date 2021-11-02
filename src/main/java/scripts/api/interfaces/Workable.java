@@ -175,7 +175,6 @@ public interface Workable {
      */
     default Optional<PickAxe> workerHasBetterPickAxe(int miningLevel, PickAxe workerPickAxe) {
         if (workerPickAxe != null) {
-            int currentPickAxeId = workerPickAxe.getPickAxeId();
             int currentPickAxeLevel = workerPickAxe.getPickAxeLevel();
 
             for (PickAxe pickaxe : PickAxe.values()) {
@@ -186,8 +185,8 @@ public interface Workable {
                         .findFirst();
                 if (bankPickAxe.isPresent()) {
                     int bankPickAxeLevel = pickaxe.getPickAxeLevel();
-                    if (miningLevel > bankPickAxeLevel) {
-                        if (bankPickAxeLevel > currentPickAxeLevel) {
+                    if (miningLevel >= bankPickAxeLevel) {
+                        if (bankPickAxeLevel >= currentPickAxeLevel) {
                             return Optional.of(pickaxe);
                         }
                     }
@@ -279,13 +278,6 @@ public interface Workable {
                         .getWorldTiles()
                         .contains(gameObject.getTile()))
                 .findBestInteractable();
-    }
-
-    default boolean inventoryIsReadyMotherlode(PickAxe pickAxe) {
-       return Query.inventory()
-                .idNotEquals(GEM_BAG, COAL_BAG, GEM_BAG_OPEN, COAL_BAG, HAMMER)
-                .count() == 0
-                ;
     }
 
     default boolean inventoryFullOre() {
@@ -637,6 +629,7 @@ public interface Workable {
                 return Optional.of(PickAxe.BRONZE_PICKAXE);
             }
         } else {
+
         }
         return Optional.empty();
     }

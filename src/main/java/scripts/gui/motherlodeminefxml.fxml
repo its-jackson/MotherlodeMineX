@@ -174,9 +174,6 @@
                            <children>
                               <CheckBox fx:id="checkBoxFatigueSystem" layoutX="13.0" layoutY="25.0" mnemonicParsing="false" text="Fatigue System" />
                               <CheckBox fx:id="checkBoxMicroSleep" layoutX="13.0" layoutY="50.0" mnemonicParsing="false" text="AFK Micro Sleep" />
-                              <CheckBox fx:id="checkBoxAntiBanSeed" disable="true" layoutX="13.0" layoutY="98.0" mnemonicParsing="false" text="Anti-Ban Seed" />
-                              <TextField fx:id="textFieldAntiBanSeed" disable="true" layoutX="13.0" layoutY="124.0" promptText="Seed" />
-                              <Label fx:id="labelAntiBanControl" layoutX="26.0" layoutY="153.0" text="(This option is used for generating random player preferences)" />
                            </children>
                         </AnchorPane>
                      </content>

@@ -12,7 +12,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import org.tribot.script.sdk.util.ScriptSettings;
-import org.tribot.script.sdk.util.serialization.PolymorphicAdapter;
 import scripts.MotherlodeMineXSettings;
 import scripts.MotherlodeMineXVariables;
 import scripts.api.*;
@@ -21,6 +20,7 @@ import scripts.api.enums.ResourceLocation;
 import scripts.api.enums.ResourceOption;
 import scripts.api.enums.WorkType;
 import scripts.api.interfaces.Workable;
+import scripts.api.utilities.PolymorphicScriptSettings;
 import scripts.api.works.Mining;
 import scripts.api.works.MotherlodeMine;
 import scripts.api.works.Work;
@@ -195,10 +195,6 @@ public class Controller implements Initializable {
 
     @FXML
     @DoNotRename
-    private ProgressBar progressBarCore;
-
-    @FXML
-    @DoNotRename
     private CheckBox checkBoxDoNotUpgrade;
 
     @FXML
@@ -240,18 +236,6 @@ public class Controller implements Initializable {
     @FXML
     @DoNotRename
     private CheckBox checkBoxMicroSleep;
-
-    @FXML
-    @DoNotRename
-    private CheckBox checkBoxAntiBanSeed;
-
-    @FXML
-    @DoNotRename
-    private TextField textFieldAntiBanSeed;
-
-    @FXML
-    @DoNotRename
-    private Label labelAntiBanControl;
 
     @FXML
     @DoNotRename
@@ -354,9 +338,6 @@ public class Controller implements Initializable {
         // check box do not upgrade
         onActionCheckBoxDoNotUpgrade();
 
-        // antiban seed
-        onActionCheckBoxAntiBanSeed();
-
         // world hop slider
         onActionCheckBoxWorldHopPlayerCount();
 
@@ -401,9 +382,8 @@ public class Controller implements Initializable {
     @DoNotRename
     private void onActionChoiceBoxResource() {
         getChoiceBoxResource().setOnAction(actionEvent -> {
-
-
-            Resource resource = getChoiceBoxResource().getSelectionModel()
+            Resource resource = getChoiceBoxResource()
+                    .getSelectionModel()
                     .getSelectedItem();
 
             reviseResourceLocation(resource);
@@ -647,21 +627,13 @@ public class Controller implements Initializable {
     @DoNotRename
     private void onActionButtonSaveSettings() {
         getButtonSaveWork().setOnAction(actionEvent -> {
-            // polymorphic handler
-            PolymorphicAdapter<MotherlodeMineXSettings> polymorphicAdapter = new PolymorphicAdapter<>();
             // settings handler
-            ScriptSettings settingsHandler = ScriptSettings.getDefault();
+            ScriptSettings settingsHandler = new PolymorphicScriptSettings()
+                    .getSettings();
+
             // the settings
             MotherlodeMineXSettings settings = new MotherlodeMineXSettings();
-            // downcast the work appropriately
-            for (Work work : getTableViewCore().getItems()) {
-                if (work instanceof MotherlodeMine) {
-                    settings.getMotherlodeWork().add((MotherlodeMine) work);
-                } else {
-                    settings.getMiningWork().add((Mining) work);
-                }
-            }
-            // set the settings from gui
+            settings.getWork().addAll(getTableViewCore().getItems());
             settings.setRepeat(getRadioButtonRepeat().isSelected());
             settings.setRepeatShuffle(getRadioButtonShuffleRepeat().isSelected());
             settings.setDoNotRepeat(getRadioButtonDoNotRepeat().isSelected());
@@ -672,23 +644,21 @@ public class Controller implements Initializable {
             settings.setUseCoalBag(getCheckBoxUseCoalBag().isSelected());
             settings.setFatigue(getCheckBoxFatigueSystem().isSelected());
             settings.setMicroSleep(getCheckBoxMicroSleep().isSelected());
-            settings.setUseAntiBanSeed(getCheckBoxAntiBanSeed().isSelected());
-            settings.setAntiBanSeed(getTextFieldAntiBanSeed().getText());
             settings.setWorldHop(getCheckBoxWorldHopPlayerCount().isSelected());
             settings.setWorldHopRandom(getCheckBoxRandomWorldHop().isSelected());
             settings.setWorldHopNoResources(getCheckBoxNoResourcesWorldHop().isSelected());
             settings.setWorldHopFactor(getSliderWorldHopPlayerCount().getValue());
+
             // file chooser - save settings file
             FileChooser fileChooser = new FileChooser();
             FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter(".json", "*.json");
             fileChooser.getExtensionFilters().add(extensionFilter);
-            if (!settingsHandler.getDirectory().exists()) {
-                settingsHandler.getDirectory().mkdirs();
-            }
             fileChooser.setInitialDirectory(settingsHandler.getDirectory());
             fileChooser.setTitle("Save settings");
+
             // show save file
             File file = fileChooser.showSaveDialog(getGui().getStage());
+
             // save settings
             if (file != null) {
                 boolean saveResult = settingsHandler.save(file.getName(), settings);
@@ -705,14 +675,12 @@ public class Controller implements Initializable {
     private void onActionButtonLoadSettings() {
         getButtonLoadWork().setOnAction(actionEvent -> {
             // settings handler
-            ScriptSettings settingsHandler = ScriptSettings.getDefault();
+            ScriptSettings settingsHandler = new PolymorphicScriptSettings()
+                    .getSettings();
             // file chooser - save settings file
             FileChooser fileChooser = new FileChooser();
             FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter(".json", "*.json");
             fileChooser.getExtensionFilters().add(extensionFilter);
-            if (!settingsHandler.getDirectory().exists()) {
-                settingsHandler.getDirectory().mkdirs();
-            }
             fileChooser.setInitialDirectory(settingsHandler.getDirectory());
             fileChooser.setTitle("Load settings");
             // show save file
@@ -723,8 +691,7 @@ public class Controller implements Initializable {
                         .ifPresent(settings -> {
                             System.out.println("[GUI] Loaded settings: " + settings);
                             getTableViewCore().getItems().clear();
-                            getTableViewCore().getItems().addAll(settings.getMotherlodeWork());
-                            getTableViewCore().getItems().addAll(settings.getMiningWork());
+                            getTableViewCore().getItems().addAll(settings.getWork());
                             getRadioButtonShuffleRepeat().setSelected(settings.isRepeatShuffle());
                             getRadioButtonRepeat().setSelected(settings.isRepeat());
                             getRadioButtonDoNotRepeat().setSelected(settings.isDoNotRepeat());
@@ -734,12 +701,10 @@ public class Controller implements Initializable {
                             getCheckBoxUseCoalBag().setSelected(settings.isUseCoalBag());
                             getCheckBoxFatigueSystem().setSelected(settings.isFatigue());
                             getCheckBoxMicroSleep().setSelected(settings.isMicroSleep());
-                            getCheckBoxAntiBanSeed().setSelected(settings.isUseAntiBanSeed());
                             getCheckBoxWorldHopPlayerCount().setSelected(settings.isWorldHop());
                             getCheckBoxRandomWorldHop().setSelected(settings.isWorldHopRandom());
                             getCheckBoxNoResourcesWorldHop().setSelected(settings.isWorldHopNoResources());
                             getComboBoxSpecificPickAxe().getSelectionModel().select(settings.getDesiredPickaxe());
-                            getTextFieldAntiBanSeed().setText(settings.getAntiBanSeed());
                             getSliderWorldHopPlayerCount().setValue(settings.getWorldHopFactor());
                         });
             }
@@ -751,16 +716,7 @@ public class Controller implements Initializable {
     private void onActionButtonStart() {
         getButtonStart().setOnAction(actionEvent -> {
             MotherlodeMineXSettings settings = MotherlodeMineXVariables.get().getSettings();
-            // set the settings from gui
-            for (Work work : getTableViewCore().getItems()) {
-                if (work instanceof MotherlodeMine) {
-                    settings.getMotherlodeWork().add((MotherlodeMine) work);
-                } else {
-                    settings.getMiningWork().add((Mining) work);
-                }
-            }
-            settings.getWork().addAll(settings.getMotherlodeWork());
-            settings.getWork().addAll(settings.getMiningWork());
+            settings.getWork().addAll(getTableViewCore().getItems());
             settings.setRepeat(getRadioButtonRepeat().isSelected());
             settings.setRepeatShuffle(getRadioButtonShuffleRepeat().isSelected());
             settings.setDoNotRepeat(getRadioButtonDoNotRepeat().isSelected());
@@ -771,8 +727,6 @@ public class Controller implements Initializable {
             settings.setUseCoalBag(getCheckBoxUseCoalBag().isSelected());
             settings.setFatigue(getCheckBoxFatigueSystem().isSelected());
             settings.setMicroSleep(getCheckBoxMicroSleep().isSelected());
-            settings.setUseAntiBanSeed(getCheckBoxAntiBanSeed().isSelected());
-            settings.setAntiBanSeed(getTextFieldAntiBanSeed().getText());
             settings.setWorldHop(getCheckBoxWorldHopPlayerCount().isSelected());
             settings.setWorldHopRandom(getCheckBoxRandomWorldHop().isSelected());
             settings.setWorldHopNoResources(getCheckBoxNoResourcesWorldHop().isSelected());
@@ -801,18 +755,6 @@ public class Controller implements Initializable {
 
     @FXML
     @DoNotRename
-    private void onActionCheckBoxAntiBanSeed() {
-        getCheckBoxAntiBanSeed().setOnAction(actionEvent -> {
-            if (getCheckBoxAntiBanSeed().isSelected()) {
-                getTextFieldAntiBanSeed().setDisable(false);
-            } else {
-                getTextFieldAntiBanSeed().setDisable(true);
-            }
-        });
-    }
-
-    @FXML
-    @DoNotRename
     private void onActionCheckBoxWorldHopPlayerCount() {
         getCheckBoxWorldHopPlayerCount().setOnAction(actionEvent -> {
             if (getCheckBoxWorldHopPlayerCount().isSelected()) {
@@ -828,7 +770,7 @@ public class Controller implements Initializable {
     private void onActionHyperLinkDiscordChannel() {
         getHyperLinkDiscordChannel().setOnAction(actionEvent -> {
             try {
-                Desktop.getDesktop().browse(new URI("https://discord.gg/T5K6Nxrf"));
+                Desktop.getDesktop().browse(new URI("https://discord.gg/5kKq3X2X6g"));
             } catch (IOException | URISyntaxException e) {
                 e.printStackTrace();
             }
@@ -840,7 +782,8 @@ public class Controller implements Initializable {
     private void onActionHyperLinkForum() {
         getHyperLinkForum().setOnAction(actionEvent -> {
             try {
-                Desktop.getDesktop().browse(new URI("https://community.tribot.org/topic/84014-tribot-sdk-motherlode-mine-x-abc2work-basedfatigue-systempickaxe-upgradingworld-hopping/"));
+                Desktop.getDesktop().browse(
+                        new URI("https://community.tribot.org/topic/84014-tribot-sdk-motherlode-mine-x-abc2work-basedfatigue-systempickaxe-upgradingworld-hopping/"));
             } catch (IOException | URISyntaxException e) {
                 e.printStackTrace();
             }
@@ -910,7 +853,8 @@ public class Controller implements Initializable {
                     list.add(ResourceLocation.MINING_VARROCK_SOUTH_WEST);
                     break;
                 case COAL_ROCK:
-                    list.add(ResourceLocation.MINING_VARROCK_SOUTH_WEST);
+                    list.add(ResourceLocation.MINING_BARBARIAN_VILLAGE);
+                    list.add(ResourceLocation.MINING_LUMBRIDGE_SOUTH_WEST);
                     list.add(ResourceLocation.MINING_RIMMINGTON);
                     break;
                 case GOLD_ROCK:
@@ -1399,18 +1343,6 @@ public class Controller implements Initializable {
 
     @FXML
     @DoNotRename
-    public ProgressBar getProgressBarCore() {
-        return progressBarCore;
-    }
-
-    @FXML
-    @DoNotRename
-    public void setProgressBarCore(ProgressBar progressBarCore) {
-        this.progressBarCore = progressBarCore;
-    }
-
-    @FXML
-    @DoNotRename
     public CheckBox getCheckBoxDoNotUpgrade() {
         return checkBoxDoNotUpgrade;
     }
@@ -1515,42 +1447,6 @@ public class Controller implements Initializable {
     @DoNotRename
     public void setCheckBoxMicroSleep(CheckBox checkBoxMicroSleep) {
         this.checkBoxMicroSleep = checkBoxMicroSleep;
-    }
-
-    @FXML
-    @DoNotRename
-    public CheckBox getCheckBoxAntiBanSeed() {
-        return checkBoxAntiBanSeed;
-    }
-
-    @FXML
-    @DoNotRename
-    public void setCheckBoxAntiBanSeed(CheckBox checkBoxAntiBanSeed) {
-        this.checkBoxAntiBanSeed = checkBoxAntiBanSeed;
-    }
-
-    @FXML
-    @DoNotRename
-    public TextField getTextFieldAntiBanSeed() {
-        return textFieldAntiBanSeed;
-    }
-
-    @FXML
-    @DoNotRename
-    public void setTextFieldAntiBanSeed(TextField textFieldAntiBanSeed) {
-        this.textFieldAntiBanSeed = textFieldAntiBanSeed;
-    }
-
-    @FXML
-    @DoNotRename
-    public Label getLabelAntiBanControl() {
-        return labelAntiBanControl;
-    }
-
-    @FXML
-    @DoNotRename
-    public void setLabelAntiBanControl(Label labelAntiBanControl) {
-        this.labelAntiBanControl = labelAntiBanControl;
     }
 
     @FXML

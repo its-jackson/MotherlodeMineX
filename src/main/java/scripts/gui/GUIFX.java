@@ -22,21 +22,16 @@ public class GUIFX extends Application {
 
     private boolean isOpen = false;
 
-    private URL fxml;
+    private final URL fxml;
 
     public GUIFX(URL fxml) {
-
         this.fxml = fxml;
 
-        // We have to start the JFX thread from the EDT otherwise tribot will end it.
         SwingUtilities.invokeLater(() -> {
-
-            new JFXPanel(); // we have to init the toolkit
-
+            new JFXPanel(); // toolkit
             Platform.runLater(() -> {
                 try {
                     final Stage stage = new Stage();
-
                     start(stage);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -44,7 +39,7 @@ public class GUIFX extends Application {
             });
         });
 
-        waitForInit();
+        Waiting.waitUntil(7000, () -> stage != null);
     }
 
 
@@ -65,12 +60,11 @@ public class GUIFX extends Application {
      * NOTE: This method is called on the JavaFX Application Thread.
      * </p>
      *
-     * @param stage
-     *            the primary stage for this application, onto which the application
-     *            scene can be set. The primary stage will be embedded in the
-     *            browser if the application was launched as an applet. Applications
-     *            may create other stages, if needed, but they will not be primary
-     *            stages and will not be embedded in the browser.
+     * @param stage the primary stage for this application, onto which the application
+     *              scene can be set. The primary stage will be embedded in the
+     *              browser if the application was launched as an applet. Applications
+     *              may create other stages, if needed, but they will not be primary
+     *              stages and will not be embedded in the browser.
      */
     @Override
     public void start(Stage stage) throws Exception {
@@ -78,7 +72,7 @@ public class GUIFX extends Application {
 
         stage.setTitle("Motherlode Mine X - Written By Polymorphic");
 
-        stage.getIcons().add(new Image("https://jacksonjohnson.ca/motherlodeminex/dragon_pickaxe_icon.png"));
+        stage.getIcons().add(new Image("https://jacksonjohnson.ca/motherlodeminex/dragon_pickaxe.png"));
 
         stage.setAlwaysOnTop(true);
 
@@ -103,13 +97,10 @@ public class GUIFX extends Application {
 
     @SuppressWarnings("unchecked")
     public <T extends Controller> T getController() {
-
         return (T) this.controller;
-
     }
 
     public void show() {
-
         if (stage == null)
             return;
 
@@ -119,7 +110,6 @@ public class GUIFX extends Application {
     }
 
     public void close() {
-
         if (stage == null)
             return;
 
@@ -130,10 +120,6 @@ public class GUIFX extends Application {
 
     public boolean isOpen() {
         return isOpen;
-    }
-
-    private void waitForInit() {
-        Waiting.waitUntil(5000, () -> stage != null);
     }
 }
 

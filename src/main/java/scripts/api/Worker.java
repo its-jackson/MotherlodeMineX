@@ -11,13 +11,12 @@ import scripts.api.interfaces.Workable;
 
 public class Worker {
 
-    private static Worker instance = new Worker();
+    private final static Worker instance = new Worker();
 
     public final String user_name = Tribot.getUsername();
 
     private Workable.PickAxe pickaxe;
 
-    private int actualMiningLevel;
     private int actualAttackLevel;
     private int oreCount;
     private int levelCount;
@@ -37,15 +36,10 @@ public class Worker {
 
     public void incrementLevelCount() {
         this.levelCount++;
-        this.actualMiningLevel += this.levelCount;
     }
 
     public static Worker getInstance() {
         return instance;
-    }
-
-    public static void setInstance(Worker instance) {
-        Worker.instance = instance;
     }
 
     public Workable.PickAxe getPickaxe() {
@@ -54,14 +48,6 @@ public class Worker {
 
     public void setPickaxe(Workable.PickAxe pickaxe) {
         this.pickaxe = pickaxe;
-    }
-
-    public int getActualMiningLevel() {
-        return actualMiningLevel;
-    }
-
-    public void setActualMiningLevel(int actualMiningLevel) {
-        this.actualMiningLevel = actualMiningLevel;
     }
 
     public int getActualAttackLevel() {
@@ -117,7 +103,6 @@ public class Worker {
         return "Worker{" +
                 "user_name='" + user_name + '\'' +
                 ", pickaxe=" + pickaxe +
-                ", actualMiningLevel=" + actualMiningLevel +
                 ", actualAttackLevel=" + actualAttackLevel +
                 ", oreCount=" + oreCount +
                 ", levelCount=" + levelCount +
