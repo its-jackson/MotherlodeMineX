@@ -279,7 +279,7 @@ public class Walking implements Nodeable, Workable {
     private boolean shouldWalkToOreVeins() {
         if (!Inventory.isFull()) {
             if (workerHasOptimalPickaxe(Worker.getInstance().getPickaxe())) {
-                if (workerHasMotherlodeEquipment(MotherlodeMineXVariables.get().getSettings())) {
+                if (workerHasMotherlodeEquipment(getVariables().getSettings())) {
                     if (!workerIsInLocation(getWork())) {
                         if (inventoryContainsHammer()) {
                             if (!payDirtSackIsFull() && !payDirtSackAlmostFull(PayDirt.getFuturePayDirtSackCount())) {
@@ -350,7 +350,7 @@ public class Walking implements Nodeable, Workable {
         // inventory is full of pay-dirt
         // inventory does not contain hammer
         if (workerHasOptimalPickaxe(Worker.getInstance().getPickaxe())) {
-            if (workerHasMotherlodeEquipment(MotherlodeMineXVariables.get().getSettings())) {
+            if (workerHasMotherlodeEquipment(getVariables().getSettings())) {
                 if (!isAtHammerCrate()) {
                     if (!payDirtSackIsFull() && !payDirtSackAlmostFull(PayDirt.getFuturePayDirtSackCount())) {
                         if (!inventoryContainsHammer()) {
@@ -377,7 +377,7 @@ public class Walking implements Nodeable, Workable {
     private boolean shouldUpgradePickAxeFromBank() {
         if (BankCache.isInitialized()) {
             log("Bank initialized");
-            if (!MotherlodeMineXVariables.get().getSettings().isDoNotUpgrade()) {
+            if (!getVariables().getSettings().isDoNotUpgrade()) {
                 if (workerHasBetterPickAxe(Skill.MINING.getActualLevel(), Worker.getInstance().getPickaxe())
                         .isPresent()) {
                     if (!isAtBank(getWork().getBankLocation())) {
@@ -398,7 +398,7 @@ public class Walking implements Nodeable, Workable {
         // is at bank
         if (!isAtBank(getWork().getBankLocation())) {
             if (workerHasOptimalPickaxe(Worker.getInstance().getPickaxe())) {
-                if (!workerHasMotherlodeEquipment(MotherlodeMineXVariables.get().getSettings())) {
+                if (!workerHasMotherlodeEquipment(getVariables().getSettings())) {
                     setWalkToBankRetrieveEquipment(true);
                     return isWalkToBankRetrieveEquipment();
                 }

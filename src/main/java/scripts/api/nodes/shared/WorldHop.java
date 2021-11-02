@@ -5,7 +5,6 @@ import org.tribot.api.General;
 import org.tribot.script.sdk.*;
 import org.tribot.script.sdk.query.Query;
 
-import scripts.MotherlodeMineXSettings;
 import scripts.MotherlodeMineXVariables;
 import scripts.api.PolymorphicArea;
 import scripts.api.Worker;
@@ -32,8 +31,7 @@ public class WorldHop implements Nodeable, Workable {
 
     @Override
     public void execute() {
-        MotherlodeMineXVariables vars = MotherlodeMineXVariables.get();
-        int sleepTime = AntiBan.sleep(vars.getWaitTimes());
+        int sleepTime = AntiBan.sleep(getVariables().getWaitTimes());
         String successful = "World hopped successful";
         String unsuccessful = "World hopped unsuccessful";
 
@@ -74,7 +72,6 @@ public class WorldHop implements Nodeable, Workable {
 
     @Override
     public boolean validate() {
-        MotherlodeMineXSettings settings = MotherlodeMineXVariables.get().getSettings();
         // start stop watch if not started
         if (getStopWatch().isStopped()) {
             getStopWatch().start();
@@ -84,16 +81,16 @@ public class WorldHop implements Nodeable, Workable {
             PolymorphicArea polymorphicArea = getWork().getResourceLocation().getPolymorphicArea();
             if (workerIsInLocation(getWork())) {
                 // world hop player count
-                if (settings.isWorldHop()) {
+                if (getVariables().getSettings().isWorldHop()) {
                     int playerCount = Query.players()
                             .filter(player -> polymorphicArea.getWorldTiles().contains(player.getTile()))
                             .count();
-                    if (playerCount >= settings.getWorldHopFactor()) {
+                    if (playerCount >= getVariables().getSettings().getWorldHopFactor()) {
                         return true;
                     }
                 }
                 // world hop random time
-                if (settings.isWorldHopRandom()) {
+                if (getVariables().getSettings().isWorldHopRandom()) {
                     if (getStopWatch().getTime() >= getWorldHopTimeInterval()) {
                         setWorldHopTimeInterval(General.randomLong(300000, 1200000));
                         getStopWatch().reset();
@@ -101,7 +98,7 @@ public class WorldHop implements Nodeable, Workable {
                     }
                 }
                 // world hop no resources - mining only right now
-                if (settings.isWorldHopNoResources() && getWork() instanceof Mining) {
+                if (getVariables().getSettings().isWorldHopNoResources() && getWork() instanceof Mining) {
                     if (!Inventory.isFull()) {
                         if (workerHasOptimalPickaxe(Worker.getInstance().getPickaxe())) {
                             return locateGameObject(getWork()).isEmpty();

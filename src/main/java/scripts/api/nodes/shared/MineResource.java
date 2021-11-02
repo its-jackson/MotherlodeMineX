@@ -263,7 +263,7 @@ public class MineResource implements Nodeable, Workable {
 
     private boolean shouldMineOreVein(Work work) {
         if (!Inventory.isFull()) {
-            if (workerHasMotherlodeEquipment(MotherlodeMineXVariables.get().getSettings())) {
+            if (workerHasMotherlodeEquipment(getVariables().getSettings())) {
                 if (workerHasOptimalPickaxe(Worker.getInstance().getPickaxe())) {
                     if (inventoryContainsHammer()) {
                         if (workerIsInLocation(work)) {

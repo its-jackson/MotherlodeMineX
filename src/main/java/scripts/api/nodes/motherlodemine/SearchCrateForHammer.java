@@ -32,8 +32,7 @@ public class SearchCrateForHammer implements Nodeable, Workable {
 
     @Override
     public void execute() {
-        MotherlodeMineXVariables vars = MotherlodeMineXVariables.get();
-        int sleepTime = AntiBan.sleep(vars.getWaitTimes());
+        int sleepTime = AntiBan.sleep(getVariables().getWaitTimes());
         String searching = "Searching crate for a hammer";
         String successful = "Crate searched successful";
         String unsuccessful ="Crate searched unsuccessful";
@@ -113,7 +112,7 @@ public class SearchCrateForHammer implements Nodeable, Workable {
 
     private boolean shouldFetchHammer() {
         if (isAtHammerCrate()) {
-            if (workerHasMotherlodeEquipment(MotherlodeMineXVariables.get().getSettings())) {
+            if (workerHasMotherlodeEquipment(getVariables().getSettings())) {
                 if (workerHasOptimalPickaxe(Worker.getInstance().getPickaxe())) {
                     if (!payDirtSackIsFull() && !payDirtSackAlmostFull(PayDirt.getFuturePayDirtSackCount())) {
                         return !inventoryContainsHammer();

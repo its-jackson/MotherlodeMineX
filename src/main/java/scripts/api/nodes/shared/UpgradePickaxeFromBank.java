@@ -64,7 +64,7 @@ public class UpgradePickaxeFromBank implements Nodeable, Workable {
         // is at the bank
         if (BankCache.isInitialized()) {
            log("Bank initialized");
-           if (!MotherlodeMineXVariables.get().getSettings().isDoNotUpgrade()) {
+           if (!getVariables().getSettings().isDoNotUpgrade()) {
                if (workerHasBetterPickAxe(Skill.MINING.getActualLevel(), Worker.getInstance().getPickaxe())
                        .isPresent()) {
                    return Bank.isNearby() && Bank.isOpen();
