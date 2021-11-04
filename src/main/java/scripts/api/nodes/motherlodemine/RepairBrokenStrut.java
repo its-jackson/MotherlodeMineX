@@ -25,7 +25,7 @@ public class RepairBrokenStrut implements Nodeable, Workable {
 
     @Override
     public void execute() {
-        int sleepTime = AntiBan.sleep(getVariables().getWaitTimes());
+        AntiBan.sleep(getVariables().getWaitTimes());
 
         boolean waitResult = false;
 

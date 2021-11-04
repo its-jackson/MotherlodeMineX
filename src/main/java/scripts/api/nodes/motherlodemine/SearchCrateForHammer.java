@@ -32,7 +32,7 @@ public class SearchCrateForHammer implements Nodeable, Workable {
 
     @Override
     public void execute() {
-        int sleepTime = AntiBan.sleep(getVariables().getWaitTimes());
+        AntiBan.sleep(getVariables().getWaitTimes());
         String searching = "Searching crate for a hammer";
         String successful = "Crate searched successful";
         String unsuccessful ="Crate searched unsuccessful";

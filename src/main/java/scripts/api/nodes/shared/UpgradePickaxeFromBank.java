@@ -23,7 +23,7 @@ public class UpgradePickaxeFromBank implements Nodeable, Workable {
 
     @Override
     public void execute() {
-        int sleepTime = AntiBan.sleep(getVariables().getWaitTimes());
+        AntiBan.sleep(getVariables().getWaitTimes());
         String upgrading = "Upgrading pickaxe";
 
         log(upgrading);

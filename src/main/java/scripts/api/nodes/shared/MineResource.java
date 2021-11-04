@@ -40,7 +40,7 @@ public class MineResource implements Nodeable, Workable {
         // node start time
         final long start_time = System.currentTimeMillis();
         // sleep before executing
-        int sleepTime = AntiBan.sleep(getVariables().getWaitTimes());
+        AntiBan.sleep(getVariables().getWaitTimes());
         // location
         ResourceLocation location = getWork().getResourceLocation();
         // log

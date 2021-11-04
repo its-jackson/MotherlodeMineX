@@ -26,7 +26,7 @@ public class DepositPayDirt implements Nodeable, Workable {
 
     @Override
     public void execute() {
-        int sleepTime = AntiBan.sleep(getVariables().getWaitTimes());
+        AntiBan.sleep(getVariables().getWaitTimes());
 
         String depositing = "Depositing pay-dirt";
         log(depositing);

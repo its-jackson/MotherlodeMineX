@@ -45,7 +45,7 @@ public class DepletePayDirtSack implements Nodeable, Workable {
         // keeping looping until sack is fully depleted
         while (payDirtSackCount() > 0 || inventoryContainsOre()) {
             // wait in between each iteration
-            int sleepTime = AntiBan.sleep(getVariables().getWaitTimes());
+            AntiBan.sleep(getVariables().getWaitTimes());
 
             // open gem bag
             if (openGemBag()) {

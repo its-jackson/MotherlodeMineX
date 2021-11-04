@@ -23,7 +23,7 @@ public class Dropping implements Nodeable, Workable {
     @Override
     public void execute() {
         // sleep
-        int sleepTime = AntiBan.sleep(getVariables().getWaitTimes());
+        AntiBan.sleep(getVariables().getWaitTimes());
         // check work type
         if (getWork() instanceof MotherlodeMine) {
             // todo

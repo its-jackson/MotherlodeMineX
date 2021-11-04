@@ -11,9 +11,6 @@ import org.tribot.api.util.abc.preferences.WalkingPreference;
 import org.tribot.api2007.*;
 import org.tribot.script.sdk.Log;
 import org.tribot.script.sdk.types.GameObject;
-import scripts.MotherlodeMineX;
-import scripts.MotherlodeMineXVariables;
-import scripts.api.interfaces.Workable;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -25,16 +22,12 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Adapted from Starfox
  * https://github.com/frankkeuning/chopper/blob/master/AntiBan.java
- *
  * @Version 4.0 (1/24/2016 3:37 PM GTM+0)
- *
  * @Version 4.1 (12/13/2020 9:10 PM EST) - Polymorphic
- *  --Replaced all deprecated code with updated code.
- *
+ * --Replaced all deprecated code with updated code.
  * @Version 4.2 (01/01/2021 4:20 PM EST) - Polymorphic
  * -- Updated checkXP method
  * -- If checkXP is called then game tab will reset to inventory once checkXP is finished executing.
- *
  * @Version 4.3 (01/14/2021 3:25 PM EST) - Polymorphic
  * -- Added ABCCount for every ant-iban task performed
  */
@@ -49,52 +42,52 @@ public final class AntiBan {
     /**
      * The boolean flag that determines whether or not to print debug information
      */
-    private static boolean print_debug;
+    private static boolean printDebug;
 
     /**
      * The boolean flag that determines whether or not to afk micro sleep
      */
-    private static boolean micro_sleep;
+    private static boolean microSleep;
 
     /**
      * The boolean flag that determines whether or not to afk micro sleep
      */
-    private static boolean human_fatigue;
+    private static boolean humanFatigue;
 
     /**
      * The amount of resources you have won
      */
-    private static int resources_won;
+    private static int resourcesWon;
 
     /**
      * The amount of resources you have lost
      */
-    private static int resources_lost;
+    private static int resourcesLost;
 
     /**
      * The % run energy to activate run at
      */
-    private static int run_at;
+    private static int runAt;
 
     /**
      * The % hp to eat food at
      */
-    private static int eat_at;
+    private static int eatAt;
 
     /**
      * The bool that determines whether or not we should be hovering.
      */
-    private static boolean should_hover;
+    private static boolean shouldHover;
 
     /**
      * The bool that determines whether or not we should be opening the menu.
      */
-    private static boolean should_open_menu;
+    private static boolean shouldOpenMenu;
 
     /**
      * The time stamp at which we were last under attack.
      */
-    private static long last_under_attack_time;
+    private static long lastUnderAttackTime;
 
     /**
      * The bool that determines whether or not we should reaction sleep
@@ -104,21 +97,18 @@ public final class AntiBan {
     /**
      * The amount of times abc has performed a check
      */
-    private static int abc_count;
+    private static int abcCount;
 
     /**
      * The start time
      */
-    private static long abc_start_time;
+    private static long abcStartTime;
 
     /**
      * The afk timer
      */
-    private static long abc_afk_timer;
+    private static long abcAfkTimer;
 
-    /**
-     * The fatigue class
-     */
     private static Fatigue fatigue;
 
     private static double fatigueMultiple;
@@ -129,22 +119,22 @@ public final class AntiBan {
      */
     static {
         abc = new ABCUtil();
-        abc_count = 0;
-        abc_start_time = System.currentTimeMillis();
-        abc_afk_timer = General.randomLong(300000, 1200000); // 5-20 minutes
-        print_debug = false;
-        micro_sleep = false;
-        human_fatigue = false;
+        abcCount = 0;
+        abcStartTime = System.currentTimeMillis();
+        abcAfkTimer = General.randomLong(300000, 1200000); // 5-20 minutes
+        printDebug = false;
+        microSleep = false;
+        humanFatigue = false;
         fatigue = new Fatigue();
         getFatigue().setCurrentFatigueMultiple(getFatigue().getFatigueMultipleSubset().iterator().next());
         setFatigueMultiple(getFatigue().getCurrentFatigueMultiple());
-        resources_won = 0;
-        resources_lost = 0;
-        run_at = abc.generateRunActivation();
-        eat_at = abc.generateEatAtHP();
-        should_hover = abc.shouldHover();
-        should_open_menu = abc.shouldOpenMenu() && abc.shouldHover();
-        last_under_attack_time = 0;
+        resourcesWon = 0;
+        resourcesLost = 0;
+        runAt = abc.generateRunActivation();
+        eatAt = abc.generateEatAtHP();
+        shouldHover = abc.shouldHover();
+        shouldOpenMenu = abc.shouldOpenMenu() && abc.shouldHover();
+        lastUnderAttackTime = 0;
         enableReactionSleep = true;
         General.useAntiBanCompliance(true);
     }
@@ -152,7 +142,8 @@ public final class AntiBan {
     /**
      * Prevent instantiation of this class
      */
-    private AntiBan(){}
+    private AntiBan() {
+    }
 
     /**
      * Destroys the current instance of ABCUtil and stops all anti-ban threads.
@@ -169,7 +160,7 @@ public final class AntiBan {
      * @return The ABCCount int
      */
     public static int getABCCount() {
-        return abc_count;
+        return abcCount;
     }
 
     /**
@@ -178,11 +169,11 @@ public final class AntiBan {
      * @param abc_count The int to set
      */
     public static void setABCCount(int abc_count) {
-        AntiBan.abc_count = abc_count;
+        AntiBan.abcCount = abc_count;
     }
 
     public static void incrementABCCount() {
-        abc_count++;
+        abcCount++;
     }
 
     /**
@@ -208,7 +199,7 @@ public final class AntiBan {
      * @return The energy % to run at
      */
     public static int getRunAt() {
-        return run_at;
+        return runAt;
     }
 
     /**
@@ -217,7 +208,7 @@ public final class AntiBan {
      * @return The hitpoints % to eat at
      */
     public static int getEatAt() {
-        return eat_at;
+        return eatAt;
     }
 
     /**
@@ -226,7 +217,7 @@ public final class AntiBan {
      * @return True if should hover, false otherwise
      */
     public static boolean getShouldHover() {
-        return should_hover;
+        return shouldHover;
     }
 
     /**
@@ -235,7 +226,7 @@ public final class AntiBan {
      * @return True if should open menu, false otherwise
      */
     public static boolean getShouldOpenMenu() {
-        return should_open_menu;
+        return shouldOpenMenu;
     }
 
     /**
@@ -244,7 +235,7 @@ public final class AntiBan {
      * @return The last time under attack
      */
     public static long getLastUnderAttackTime() {
-        return last_under_attack_time;
+        return lastUnderAttackTime;
     }
 
     /**
@@ -295,11 +286,11 @@ public final class AntiBan {
      * @param state The bool to set.
      */
     public static void setPrintDebug(boolean state) {
-        print_debug = state;
+        printDebug = state;
     }
 
     public static boolean getPrintDebug() {
-        return print_debug;
+        return printDebug;
     }
 
     /**
@@ -310,19 +301,19 @@ public final class AntiBan {
      * @param state The bool to set.
      */
     public static void setMicroSleep(boolean state) {
-        micro_sleep = state;
+        microSleep = state;
     }
 
     public static boolean getMicroSleep() {
-        return micro_sleep;
+        return microSleep;
     }
 
     public static boolean getHumanFatigue() {
-        return human_fatigue;
+        return humanFatigue;
     }
 
     public static void setHumanFatigue(boolean state) {
-        human_fatigue = state;
+        humanFatigue = state;
     }
 
     /**
@@ -331,7 +322,7 @@ public final class AntiBan {
      * @Return The amount of resources won.
      */
     public static int getResourcesWon() {
-        return resources_won;
+        return resourcesWon;
     }
 
     /**
@@ -340,7 +331,7 @@ public final class AntiBan {
      * @Return The amount of recourses lost.
      */
     public static int getResourcesLost() {
-        return resources_lost;
+        return resourcesLost;
     }
 
     /**
@@ -349,7 +340,7 @@ public final class AntiBan {
      * @param amount The amount to set.
      */
     public static void setResourcesWon(int amount) {
-        resources_won = amount;
+        resourcesWon = amount;
     }
 
     /**
@@ -358,21 +349,21 @@ public final class AntiBan {
      * @param amount The amount to set.
      */
     public static void setResourcesLost(int amount) {
-        resources_lost = amount;
+        resourcesLost = amount;
     }
 
     /**
      * Increments the amount of resources won by 1.
      */
     public static void incrementResourcesWon() {
-        resources_won++;
+        resourcesWon++;
     }
 
     /**
      * Increments the amount of resources lost by 1.
      */
     public static void incrementResourcesLost() {
-        resources_lost++;
+        resourcesLost++;
     }
 
     /**
@@ -381,31 +372,23 @@ public final class AntiBan {
      * @param time_stamp The time stamp.
      */
     public static void setLastUnderAttackTime(long time_stamp) {
-        last_under_attack_time = time_stamp;
+        lastUnderAttackTime = time_stamp;
     }
 
     public static long getAbcStartTime() {
-        return abc_start_time;
+        return abcStartTime;
     }
 
     public static void setAbcStartTime(long abc_start_time) {
-        AntiBan.abc_start_time = abc_start_time;
+        AntiBan.abcStartTime = abc_start_time;
     }
 
     public static long getAbcAfkTimer() {
-        return abc_afk_timer;
+        return abcAfkTimer;
     }
 
     public static void setAbcAfkTimer(long abc_afk_timer) {
-        AntiBan.abc_afk_timer = abc_afk_timer;
-    }
-
-    public static Fatigue getFatigue() {
-        return fatigue;
-    }
-
-    public static void setFatigue(Fatigue fatigue) {
-        AntiBan.fatigue = fatigue;
+        AntiBan.abcAfkTimer = abc_afk_timer;
     }
 
     public static double getFatigueMultiple() {
@@ -414,6 +397,14 @@ public final class AntiBan {
 
     public static void setFatigueMultiple(double fatigueMultiple) {
         AntiBan.fatigueMultiple = fatigueMultiple;
+    }
+
+    public static Fatigue getFatigue() {
+        return fatigue;
+    }
+
+    public static void setFatigue(Fatigue fatigue) {
+        AntiBan.fatigue = fatigue;
     }
 
     /**
@@ -437,20 +428,19 @@ public final class AntiBan {
      * Generates the trackers for ABCUtil. Call this only after successfully
      * completing an action that has a dynamic wait time for the next action.
      *
-     * @param estimated_wait
-     *            The estimated wait time (in milliseconds) before the next
-     *            action occurs.
-     * @param fixed_wait
-     *            True if estimated wait is fixed, false otherwise
+     * @param estimated_wait The estimated wait time (in milliseconds) before the next
+     *                       action occurs.
+     * @param fixed_wait     True if estimated wait is fixed, false otherwise
      */
     public static void generateTrackers(int estimated_wait, boolean fixed_wait) {
         final ABCProperties properties = getProperties();
 
-        properties.setHovering(should_hover);
-        properties.setMenuOpen(should_open_menu);
+        properties.setHovering(shouldHover);
+        properties.setMenuOpen(shouldOpenMenu);
         properties.setWaitingFixed(fixed_wait);
         properties.setWaitingTime(estimated_wait);
-        properties.setUnderAttack(Combat.isUnderAttack() || (Timing.currentTimeMillis() - last_under_attack_time < 2000));
+
+        properties.setUnderAttack(Combat.isUnderAttack() || (Timing.currentTimeMillis() - lastUnderAttackTime < 2000));
 
         getABCUtil().generateTrackers();
     }
@@ -460,7 +450,7 @@ public final class AntiBan {
      * should be called after successfully clicking an entity.
      */
     public static void resetShouldHover() {
-        should_hover = getABCUtil().shouldHover();
+        shouldHover = getABCUtil().shouldHover();
     }
 
     /**
@@ -468,7 +458,7 @@ public final class AntiBan {
      * should be called after successfully clicking an entity.
      */
     public static void resetShouldOpenMenu() {
-        should_open_menu = getABCUtil().shouldOpenMenu() && getABCUtil().shouldHover();
+        shouldOpenMenu = getABCUtil().shouldOpenMenu() && getABCUtil().shouldHover();
     }
 
     /**
@@ -480,7 +470,7 @@ public final class AntiBan {
     public static boolean moveCamera() {
         if (getABCUtil().shouldRotateCamera()) {
             incrementABCCount();
-            if (print_debug) {
+            if (printDebug) {
                 debug("Rotated camera");
             }
             getABCUtil().rotateCamera();
@@ -498,7 +488,7 @@ public final class AntiBan {
     public static boolean checkXp() {
         if (getABCUtil().shouldCheckXP()) {
             incrementABCCount();
-            if (print_debug) {
+            if (printDebug) {
                 debug("Checked xp");
             }
             getABCUtil().checkXP();
@@ -522,7 +512,7 @@ public final class AntiBan {
     public static boolean pickUpMouse() {
         if (getABCUtil().shouldPickupMouse()) {
             incrementABCCount();
-            if (print_debug) {
+            if (printDebug) {
                 debug("Picked up mouse");
             }
             getABCUtil().pickupMouse();
@@ -540,7 +530,7 @@ public final class AntiBan {
     public static boolean leaveGame() {
         if (getABCUtil().shouldLeaveGame()) {
             incrementABCCount();
-            if (print_debug) {
+            if (printDebug) {
                 debug("Left game");
             }
             getABCUtil().leaveGame();
@@ -558,7 +548,7 @@ public final class AntiBan {
     public static boolean examineEntity() {
         if (getABCUtil().shouldExamineEntity()) {
             incrementABCCount();
-            if (print_debug) {
+            if (printDebug) {
                 debug("Examined entity");
             }
             getABCUtil().examineEntity();
@@ -576,7 +566,7 @@ public final class AntiBan {
     public static boolean rightClick() {
         if (getABCUtil().shouldRightClick()) {
             incrementABCCount();
-            if (print_debug) {
+            if (printDebug) {
                 debug("Right clicked");
             }
             getABCUtil().rightClick();
@@ -594,7 +584,7 @@ public final class AntiBan {
     public static boolean mouseMovement() {
         if (getABCUtil().shouldMoveMouse()) {
             incrementABCCount();
-            if (print_debug) {
+            if (printDebug) {
                 debug("Mouse moved");
             }
             getABCUtil().moveMouse();
@@ -612,7 +602,7 @@ public final class AntiBan {
     public static boolean checkTabs() {
         if (getABCUtil().shouldCheckTabs()) {
             incrementABCCount();
-            if (print_debug) {
+            if (printDebug) {
                 debug("Tab checked");
             }
             getABCUtil().checkTabs();
@@ -630,7 +620,7 @@ public final class AntiBan {
     public static boolean moveToAnticipated() {
         if (getABCUtil().shouldMoveToAnticipated()) {
             incrementABCCount();
-            if (print_debug) {
+            if (printDebug) {
                 debug("Moved to anticipated");
             }
             getABCUtil().moveMouse();
@@ -640,7 +630,7 @@ public final class AntiBan {
     }
 
     public static boolean afkMicroSleep(Long afk_timer) {
-        if (micro_sleep) {
+        if (microSleep) {
             incrementABCCount();
             final long timer_run = Timing.timeFromMark(getAbcStartTime());
             final long eight_minutes_cut = 450000;
@@ -652,15 +642,12 @@ public final class AntiBan {
                     debug("AFK " + minutes + " minutes");
                     Mouse.leaveGame();
                     sleepReactionTime(sleep_magic);
-                    setAbcStartTime(System.currentTimeMillis());
-                    setAbcAfkTimer(General.randomLong(300000, 1200000));
-                    return true;
                 } else {
                     debug("AFK has been skipped");
-                    setAbcStartTime(System.currentTimeMillis());
-                    setAbcAfkTimer(General.randomLong(300000, 1200000));
-                    return true;
                 }
+                setAbcStartTime(System.currentTimeMillis());
+                setAbcAfkTimer(General.randomLong(300000, 1200000));
+                return true;
             }
         }
         return false;
@@ -669,15 +656,13 @@ public final class AntiBan {
     public static boolean checkFatigue() {
         if (getFatigue().shouldIncrementFatigue(getABCCount())) {
             setFatigueMultiple(getFatigue().getCurrentFatigueMultiple());
-            NumberFormat percentInstance = NumberFormat.getPercentInstance();
-            percentInstance.setMinimumFractionDigits(1);
-            debug("Fatigue incremented: " + percentInstance.format(getFatigueMultiple()));
+            //debug(String.format("Fatigue level incremented: %d%%", (int) getFatigueMultiple() * 100));
             return true;
         }
         return false;
     }
 
-    public static int sleep(List<Integer> waitTimes) {
+    public static void sleep(List<Integer> waitTimes) {
         int reactionTime;
 
         if (waitTimes.isEmpty()) {
@@ -689,18 +674,16 @@ public final class AntiBan {
         if (getHumanFatigue()) {
             checkFatigue();
             NumberFormat percentInstance = NumberFormat.getPercentInstance();
-            percentInstance.setMinimumFractionDigits(1);
+            percentInstance.setMinimumFractionDigits(0);
             debug("Fatigue percentage: " + percentInstance.format(getFatigueMultiple()));
             reactionTime = (int) (AntiBan.getReactionTime() * getFatigueMultiple());
         } else {
             reactionTime = (int) (AntiBan.getReactionTime() * 0.3);
         }
 
-        debug("Sleeping " + reactionTime + "ms");
-        AntiBan.sleepReactionTime(reactionTime);
         waitTimes.add(reactionTime);
-
-        return reactionTime;
+        debug(String.format("Sleeping reaction time: %sms", reactionTime));
+        AntiBan.sleepReactionTime(reactionTime);
     }
 
     public static int average(List<Integer> times) {
@@ -727,8 +710,11 @@ public final class AntiBan {
     }
 
     public static void checkAntiBanTask(GameObject object) {
-        shouldHoverObject(object);
-        shouldExamineObject(object);
+        if (object != null) {
+            shouldHoverObject(object);
+            shouldExamineObject(object);
+        }
+
         timedActions();
     }
 
@@ -755,10 +741,8 @@ public final class AntiBan {
      * Gets the next target that should be interacted with from the specified
      * list of targets.
      *
-     * @param targets
-     *            The targets to choose from.
-     * @param <T>
-     *            The generic type.
+     * @param targets The targets to choose from.
+     * @param <T>     The generic type.
      * @Return The target to interact with.
      */
     @SuppressWarnings("unchecked")
@@ -777,10 +761,10 @@ public final class AntiBan {
             Options.setRunEnabled(true);
             if (Options.setRunEnabled(true)) {
                 incrementABCCount();
-                if (print_debug) {
+                if (printDebug) {
                     debug("Turned run on at " + Game.getRunEnergy() + "%");
                 }
-                run_at = getABCUtil().generateRunActivation();
+                runAt = getABCUtil().generateRunActivation();
                 return true;
             }
         }
@@ -802,16 +786,14 @@ public final class AntiBan {
      * players HP is changed the tracker will not be reset and you will have to
      * reset it manually.
      *
-     * @param option
-     *            The option to click the food/drink with (this is normally
-     *            "Eat" or "Drink"). Input an empty string to have the method
-     *            attempt to find the correct option automatically. Note that
-     *            this is not guaranteed to execute properly if an empty string
-     *            is inputted.
-     * @param name
-     *            The name of the food or drink.
+     * @param option The option to click the food/drink with (this is normally
+     *               "Eat" or "Drink"). Input an empty string to have the method
+     *               attempt to find the correct option automatically. Note that
+     *               this is not guaranteed to execute properly if an empty string
+     *               is inputted.
+     * @param name   The name of the food or drink.
      * @Return True if the food/drink was successfully eaten/drank, false
-     *         otherwise.
+     * otherwise.
      * @see(java.lang.String, org.tribot.api2007.types.RSItem)
      */
     public static boolean eat(String option, final String name) {
@@ -826,16 +808,14 @@ public final class AntiBan {
      * players HP is changed the tracker will not be reset and you will have to
      * reset it manually.
      *
-     * @param option
-     *            The option to click the food/drink with (this is normally
-     *            "Eat" or "Drink"). Input an empty string to have the method
-     *            attempt to find the correct option automatically. Note that
-     *            this is not guaranteed to execute properly if an empty string
-     *            is inputted.
-     * @param id
-     *            The ID of the food or drink.
+     * @param option The option to click the food/drink with (this is normally
+     *               "Eat" or "Drink"). Input an empty string to have the method
+     *               attempt to find the correct option automatically. Note that
+     *               this is not guaranteed to execute properly if an empty string
+     *               is inputted.
+     * @param id     The ID of the food or drink.
      * @Return True if the food/drink was successfully eaten/drank, false
-     *         otherwise.
+     * otherwise.
      * @seet(java.lang.String, org.tribot.api2007.types.RSItem)
      */
     public static boolean eat(String option, final int id) {
@@ -850,12 +830,11 @@ public final class AntiBan {
      * resources, you should check the following condition:
      * <code>Timing.currentTimeMillis() >= check_time && AntiBan.shouldSwitchResources()</code>
      *
-     * @param player_count
-     *            The amount of players gathering resources near you.
+     * @param player_count The amount of players gathering resources near you.
      * @Return True if your player should switch resources, false otherwise.
      */
     public static boolean shouldSwitchResources(int player_count) {
-        double win_percent = ((double) (resources_won + resources_lost) / (double) resources_won);
+        double win_percent = ((double) (resourcesWon + resourcesLost) / (double) resourcesWon);
         return win_percent < 50.0 && getABCUtil().shouldSwitchResources(player_count);
     }
 
@@ -876,8 +855,7 @@ public final class AntiBan {
      * <p/>
      * This method does not guarantee a static sleep time each iteration.
      *
-     * @param iterations
-     *            How many times to sleep the item interaction delay time.
+     * @param iterations How many times to sleep the item interaction delay time.
      * @see #waitItemInteractionDelay()
      */
     public static final void waitItemInteractionDelay(int iterations) {
@@ -888,14 +866,14 @@ public final class AntiBan {
 
     /**
      * Hovers the entity if applicable.
-     *
+     * <p>
      * Note that you <i>must</i> reset the tracker yourself after the current
      * Object interaction is finished.
      */
     public static boolean hoverEntity(GameObject b) {
-        if (should_hover) {
+        if (shouldHover) {
             incrementABCCount();
-            if (print_debug) {
+            if (printDebug) {
                 debug("Hovering entity");
             }
             b.hover();
@@ -907,8 +885,7 @@ public final class AntiBan {
     /**
      * Enable or disable reaction sleeps
      *
-     * @param state
-     *            The new state
+     * @param state The new state
      */
     public static void setEnableReactionSleep(boolean state) {
         enableReactionSleep = state;
@@ -977,8 +954,7 @@ public final class AntiBan {
      * Sends the specified message to the system print stream with the [ABC2]
      * tag.
      *
-     * @param message
-     *            The message to print.
+     * @param message The message to print.
      */
     private static void debug(Object message) {
         Log.log("[ABC2] " + message);

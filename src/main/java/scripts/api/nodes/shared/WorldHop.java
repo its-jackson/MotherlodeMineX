@@ -31,7 +31,7 @@ public class WorldHop implements Nodeable, Workable {
 
     @Override
     public void execute() {
-        int sleepTime = AntiBan.sleep(getVariables().getWaitTimes());
+        AntiBan.sleep(getVariables().getWaitTimes());
         String successful = "World hopped successful";
         String unsuccessful = "World hopped unsuccessful";
 

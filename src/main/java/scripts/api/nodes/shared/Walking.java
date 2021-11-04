@@ -49,8 +49,7 @@ public class Walking implements Nodeable, Workable {
 
     @Override
     public void execute() {
-
-        int sleepTime = AntiBan.sleep(getVariables().getWaitTimes());
+        AntiBan.sleep(getVariables().getWaitTimes());
 
         String walkingToBank = "Walking to bank";
         String walkingToBankPickaxe = "Walking to bank - retrieving pickaxe";
