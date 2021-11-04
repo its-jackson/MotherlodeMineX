@@ -11,8 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Purpose of class: Store the variables for the script, such as the settings
+ */
+
 public class MotherlodeMineXVariables {
 
+    // Singleton design
     private static final MotherlodeMineXVariables instance = new MotherlodeMineXVariables();
 
     private GUIFX gui;
@@ -35,7 +40,7 @@ public class MotherlodeMineXVariables {
     private final Color progress_colour_background = new Color(0, 0, 0, 0.8F);
     private final Color main_font_colour = new Color(22, 196, 219);
 
-    public MotherlodeMineXVariables() {}
+    private MotherlodeMineXVariables() {}
 
     /**
      * Return an image from the internet.

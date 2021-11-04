@@ -35,8 +35,9 @@ public class RetrieveMotherlodeEquipment implements Nodeable, Workable {
             }
         }
 
-        // last time i checked the bank task doesn't function
+        // last time i checked the bank task doesn't function -
         // if the items don't exist in the players bank
+        // need to use bank task in future
         if (Bank.isOpen()) {
             depositAllMotherlodeMine(Worker.getInstance().getPickaxe());
 

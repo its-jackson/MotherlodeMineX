@@ -450,7 +450,6 @@ public final class AntiBan {
         properties.setMenuOpen(should_open_menu);
         properties.setWaitingFixed(fixed_wait);
         properties.setWaitingTime(estimated_wait);
-
         properties.setUnderAttack(Combat.isUnderAttack() || (Timing.currentTimeMillis() - last_under_attack_time < 2000));
 
         getABCUtil().generateTrackers();
@@ -670,8 +669,6 @@ public final class AntiBan {
     public static boolean checkFatigue() {
         if (getFatigue().shouldIncrementFatigue(getABCCount())) {
             setFatigueMultiple(getFatigue().getCurrentFatigueMultiple());
-            //debug(getFatigue());
-            //debug("New fatigue multiple: " + getFatigueMultiple());
             NumberFormat percentInstance = NumberFormat.getPercentInstance();
             percentInstance.setMinimumFractionDigits(1);
             debug("Fatigue incremented: " + percentInstance.format(getFatigueMultiple()));
@@ -700,9 +697,7 @@ public final class AntiBan {
         }
 
         debug("Sleeping " + reactionTime + "ms");
-
         AntiBan.sleepReactionTime(reactionTime);
-
         waitTimes.add(reactionTime);
 
         return reactionTime;

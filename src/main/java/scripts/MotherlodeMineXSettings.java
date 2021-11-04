@@ -6,6 +6,10 @@ import scripts.api.works.Work;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Purpose of class: Store the script settings to determine the core functionality.
+ */
+
 public class MotherlodeMineXSettings {
 
     private boolean repeat;

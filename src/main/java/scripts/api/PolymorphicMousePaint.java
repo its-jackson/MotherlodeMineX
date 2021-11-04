@@ -5,6 +5,10 @@ import org.tribot.script.sdk.painting.MousePaint;
 import java.awt.*;
 import java.awt.geom.Arc2D;
 
+/**
+ * Adapted from SkrrtNick
+ */
+
 public class PolymorphicMousePaint implements MousePaint {
 
     private Color primary;

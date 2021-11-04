@@ -9,7 +9,8 @@ import scripts.api.enums.ResourceOption;
 
 public class Mining extends Work {
 
-    private final WorldTile PORT_SARIM_BANK_TILE = new WorldTile(0, 0, 0);
+    // Not yet
+    private final WorldTile PORT_SARIM_DEPOSIT_BOX_TILE = new WorldTile(0, 0, 0);
 
     public Mining(Resource resource, ResourceLocation resourceLocation, ResourceOption resourceOption, int level, TimeElapse time) {
         super(resource, resourceLocation, resourceOption, level, time);
@@ -67,7 +68,7 @@ public class Mining extends Work {
                 break;
             case MINING_RIMMINGTON:
                 setBankLocation(RunescapeBank.FALADOR_EAST);
-                setAlternateBankLocation(PORT_SARIM_BANK_TILE);
+                setAlternateBankLocation(PORT_SARIM_DEPOSIT_BOX_TILE);
         }
     }
 }

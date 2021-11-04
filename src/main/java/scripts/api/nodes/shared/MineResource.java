@@ -21,7 +21,6 @@ import java.util.List;
 
 public class MineResource implements Nodeable, Workable {
 
-    private final long start_time = System.currentTimeMillis();
     private final MotherlodeMineXVariables variables = MotherlodeMineXVariables.get();
 
     private Work work;
@@ -38,6 +37,8 @@ public class MineResource implements Nodeable, Workable {
 
     @Override
     public void execute() {
+        // node start time
+        final long start_time = System.currentTimeMillis();
         // sleep before executing
         int sleepTime = AntiBan.sleep(getVariables().getWaitTimes());
         // location
@@ -160,9 +161,9 @@ public class MineResource implements Nodeable, Workable {
         } else {
             // failed to locate game object
         }
-        // destroy the game object
+
         // Generate the trackers
-        AntiBan.generateTrackers((int) (System.currentTimeMillis() - this.start_time), false);
+        AntiBan.generateTrackers((int) (System.currentTimeMillis() - start_time), false);
     }
 
     @Override
