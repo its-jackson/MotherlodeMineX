@@ -33,7 +33,7 @@ import java.util.Optional;
 
 /**
  * TODO:
- * 1) Auto buy prospector equipment, gem bag, and coal bag
+ * 1) Auto buy prospector equipment, gem bag, and coal bag (FOR MY PREMIUM SCRIPT INSTEAD NOW).
  * <p>
  * 2) Client args - COMPLETE
  * <p>
