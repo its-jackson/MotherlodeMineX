@@ -294,6 +294,8 @@ public class MotherlodeMineX implements TribotScript {
     }
 
     private void end() {
+        // must call clear paint for the next script
+        Painting.clearPaint();
         MotherlodeMineXVariables.get().setStart(false);
         throw new RuntimeException("Script is over! Thanks for playing " + Worker.getInstance().user_name);
     }

@@ -73,6 +73,7 @@ public class UpgradePickaxeFromBank implements Nodeable, Workable {
         } else {
             log("Bank not initialized");
         }
+
         return false;
     }
 

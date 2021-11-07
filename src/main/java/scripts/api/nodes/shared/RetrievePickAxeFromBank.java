@@ -1,8 +1,7 @@
 package scripts.api.nodes.shared;
 
-
 import org.tribot.script.sdk.*;
-
+import org.tribot.script.sdk.cache.BankCache;
 import org.tribot.script.sdk.tasks.BankTask;
 
 import scripts.MotherlodeMineXVariables;
@@ -11,7 +10,6 @@ import scripts.api.Worker;
 import scripts.api.antiban.AntiBan;
 import scripts.api.interfaces.Nodeable;
 import scripts.api.interfaces.Workable;
-
 
 /**
  * Purpose of class: Will retrieve the optimal pickaxe from the workers bank
@@ -35,21 +33,27 @@ public class RetrievePickAxeFromBank implements Nodeable, Workable {
     @Override
     public void execute() {
         AntiBan.sleep(getVariables().getWaitTimes());
+
         String retrievingPickaxe = "Retrieving pickaxe";
 
         log(retrievingPickaxe);
         getVariables().setState(retrievingPickaxe);
+
         // open the bank
         if (!Bank.isOpen()) {
             if (!Bank.open()) {
-                walkToBank();
+                if (walkToBank()) {
+                    log("Walked to the bank");
+                }
             }
         }
+
         // bank is open
         if (Bank.isOpen()) {
             // deposit all items
             int firstDeposit = depositAllMotherlodeMine(Worker.getInstance().getPickaxe());
             if (firstDeposit > 0) {
+                BankCache.update();
                 log("Cleaned inventory");
             }
             // calculate optimal pickaxe
@@ -115,6 +119,7 @@ public class RetrievePickAxeFromBank implements Nodeable, Workable {
         if (!workerHasOptimalPickaxe(Worker.getInstance().getPickaxe())) {
             return isAtBank(getWork().getBankLocation()) || Bank.isNearby();
         }
+
         return false;
     }
 
