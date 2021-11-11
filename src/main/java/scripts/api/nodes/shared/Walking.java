@@ -364,7 +364,7 @@ public class Walking implements Nodeable, Workable {
     }
 
     private boolean shouldRetrievePickAxeFromBank() {
-        if (!isAtBank(getWork().getBankLocation()) && Bank.isNearby()) {
+        if (!isAtBank(getWork().getBankLocation()) && !Bank.isNearby()) {
             if (!workerHasOptimalPickaxe(Worker.getInstance().getPickaxe())) {
                 setWalkToBankRetrievePickAxe(true);
                 return isWalkToBankRetrievePickAxe();

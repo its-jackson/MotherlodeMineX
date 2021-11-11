@@ -38,7 +38,7 @@ public class UpgradePickaxeFromBank implements Nodeable, Workable {
             if (Bank.contains(bankBetterPickAxeId)) {
                 if (Bank.withdraw(bankBetterPickAxeId, 1)) {
                     if (Waiting.waitUntil(() -> Inventory.contains(bankBetterPickAxeId))) {
-                        if (Worker.getInstance().getActualAttackLevel() >= bankBetterPickAxeLevel) {
+                        if (Skill.ATTACK.getActualLevel() >= bankBetterPickAxeLevel) {
                             String equip = "Equipping " + bankBetterPickAxe;
                             log(equip);
                             getVariables().setState(equip);

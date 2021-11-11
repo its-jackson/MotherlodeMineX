@@ -210,10 +210,6 @@ public class MotherlodeMineX implements TribotScript {
                 // Optimize the script when logged in every time new work occurs
                 if (!getVariables().isOptimization()) {
                     Log.log("Optimizing Motherlode Mine X");
-                    // optimize the game before executing the script
-                    // set worker starting mining level
-                    // set worker attack level
-                    Worker.getInstance().setActualAttackLevel(Skill.ATTACK.getActualLevel());
                     // set start xp
                     Worker.getInstance().setStartExperience(Skill.MINING.getXp());
                     // set the optimal pickaxe currently on the worker

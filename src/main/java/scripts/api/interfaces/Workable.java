@@ -535,6 +535,42 @@ public interface Workable {
         return false;
     }
 
+
+    default boolean openGemBag() {
+        if (Inventory.contains(GEM_BAG_OPEN) || !Inventory.contains(GEM_BAG)) {
+            return false;
+        }
+
+        Query.inventory()
+                .idEquals(GEM_BAG)
+                .findFirst()
+                .ifPresent(inventoryItem -> inventoryItem.click("Open"));
+
+        return Waiting.waitUntil(() -> Inventory.contains(GEM_BAG_OPEN));
+    }
+
+    default boolean openCoalBag() {
+        if (Inventory.contains(COAL_BAG_OPEN) || !Inventory.contains(COAL_BAG)) {
+            return false;
+        }
+
+        Query.inventory()
+                .idEquals(COAL_BAG)
+                .findFirst()
+                .ifPresent(inventoryItem -> inventoryItem.click("Open"));
+
+        return Waiting.waitUntil(() -> Inventory.contains(COAL_BAG_OPEN));
+    }
+
+    default int calculateGoldGained() {
+        return Inventory.getAll().stream()
+                .filter(inventoryItem -> inventoryItem.getName().contains("ore") || inventoryItem.getName().contains("Coal"))
+                .map(Item::lookupPrice)
+                .filter(Optional::isPresent)
+                .mapToInt(Optional::get)
+                .sum();
+    }
+
     /**
      * Reset the game tab to the inventory
      *
@@ -560,76 +596,72 @@ public interface Workable {
      *
      * @return The best pickaxe ID pertaining to the workers bank and mining level; otherwise empty optional
      */
-    static Optional<PickAxe> calculateOptimalPickAxeInBank(int miningLevel) {
-        // order always matters
-        if (Bank.contains(PickAxe.CRYSTAL_PICKAXE.getPickAxeId())) {
-            if (miningLevel >= PickAxe.CRYSTAL_PICKAXE.getPickAxeLevel()) {
-                return Optional.of(PickAxe.CRYSTAL_PICKAXE);
-            }
-        } else if (Bank.contains(PickAxe.CRYSTAL_PICKAXE_UNCHARGED.getPickAxeId())) {
-            if (miningLevel >= PickAxe.CRYSTAL_PICKAXE_UNCHARGED.getPickAxeLevel()) {
-                return Optional.of(PickAxe.CRYSTAL_PICKAXE_UNCHARGED);
-            }
-        } else if (Bank.contains(PickAxe.INFERNAL_PICKAXE_OR.getPickAxeId())) {
-            if (miningLevel >= PickAxe.INFERNAL_PICKAXE_OR.getPickAxeLevel()) {
-                return Optional.of(PickAxe.INFERNAL_PICKAXE_OR);
-            }
-        } else if (Bank.contains(PickAxe.INFERNAL_PICKAXE.getPickAxeId())) {
-            if (miningLevel >= PickAxe.INFERNAL_PICKAXE.getPickAxeLevel()) {
-                return Optional.of(PickAxe.INFERNAL_PICKAXE);
-            }
-        } else if (Bank.contains(PickAxe.INFERNAL_PICKAXE_UNCHARGED.getPickAxeId())) {
-            if (miningLevel >= PickAxe.INFERNAL_PICKAXE_UNCHARGED.getPickAxeLevel()) {
-                return Optional.of(PickAxe.INFERNAL_PICKAXE_UNCHARGED);
-            }
-        } else if (Bank.contains(PickAxe.DRAGON_PICKAXE_UPGRADED.getPickAxeId())) {
-            if (miningLevel >= PickAxe.DRAGON_PICKAXE_UPGRADED.getPickAxeLevel()) {
-                return Optional.of(PickAxe.DRAGON_PICKAXE_UPGRADED);
-            }
-        } else if (Bank.contains(PickAxe.DRAGON_PICKAXE_OR.getPickAxeId())) {
-            if (miningLevel >= PickAxe.DRAGON_PICKAXE_OR.getPickAxeLevel()) {
-                return Optional.of(PickAxe.DRAGON_PICKAXE_OR);
-            }
-        } else if (Bank.contains(PickAxe.DRAGON_PICKAXE.getPickAxeId())) {
-            if (miningLevel >= PickAxe.DRAGON_PICKAXE.getPickAxeLevel()) {
-                return Optional.of(PickAxe.DRAGON_PICKAXE);
-            }
-        } else if (Bank.contains(PickAxe.RUNE_PICKAXE.getPickAxeId())) {
-            if (miningLevel >= PickAxe.RUNE_PICKAXE.getPickAxeLevel()) {
-                return Optional.of(PickAxe.RUNE_PICKAXE);
-            }
-        } else if (Bank.contains(PickAxe.ADAMANT_PICKAXE.getPickAxeId())) {
-            if (miningLevel >= PickAxe.ADAMANT_PICKAXE.getPickAxeLevel()) {
-                return Optional.of(PickAxe.ADAMANT_PICKAXE);
-            }
-        } else if (Bank.contains(PickAxe.MITHRIL_PICKAXE.getPickAxeId())) {
-            if (miningLevel >= PickAxe.MITHRIL_PICKAXE.getPickAxeLevel()) {
-                return Optional.of(PickAxe.MITHRIL_PICKAXE);
-            }
-        } else if (Bank.contains(PickAxe.BLACK_PICKAXE.getPickAxeId())) {
-            if (miningLevel >= PickAxe.BLACK_PICKAXE.getPickAxeLevel()) {
-                return Optional.of(PickAxe.BLACK_PICKAXE);
-            }
-        } else if (Bank.contains(PickAxe.STEEL_PICKAXE.getPickAxeId())) {
-            if (miningLevel >= PickAxe.STEEL_PICKAXE.getPickAxeLevel()) {
-                return Optional.of(PickAxe.STEEL_PICKAXE);
-            }
-        } else if (Bank.contains(PickAxe.IRON_PICKAXE.getPickAxeId())) {
-            if (miningLevel >= PickAxe.IRON_PICKAXE.getPickAxeLevel()) {
-                return Optional.of(PickAxe.IRON_PICKAXE);
-            }
-        } else if (Bank.contains(PickAxe.BRONZE_PICKAXE.getPickAxeId())) {
-            if (miningLevel >= PickAxe.BRONZE_PICKAXE.getPickAxeLevel()) {
-                return Optional.of(PickAxe.BRONZE_PICKAXE);
-            }
-        }
-
-        return Optional.empty();
-    }
-
-    static boolean bankCacheContains(int id) {
-        return BankCache.getStack(id) > 0;
-    }
+//    static Optional<PickAxe> calculateOptimalPickAxeInBank(int miningLevel) {
+//        // order always matters
+//        if (Bank.contains(PickAxe.CRYSTAL_PICKAXE.getPickAxeId())) {
+//            if (miningLevel >= PickAxe.CRYSTAL_PICKAXE.getPickAxeLevel()) {
+//                return Optional.of(PickAxe.CRYSTAL_PICKAXE);
+//            }
+//        } else if (Bank.contains(PickAxe.CRYSTAL_PICKAXE_UNCHARGED.getPickAxeId())) {
+//            if (miningLevel >= PickAxe.CRYSTAL_PICKAXE_UNCHARGED.getPickAxeLevel()) {
+//                return Optional.of(PickAxe.CRYSTAL_PICKAXE_UNCHARGED);
+//            }
+//        } else if (Bank.contains(PickAxe.INFERNAL_PICKAXE_OR.getPickAxeId())) {
+//            if (miningLevel >= PickAxe.INFERNAL_PICKAXE_OR.getPickAxeLevel()) {
+//                return Optional.of(PickAxe.INFERNAL_PICKAXE_OR);
+//            }
+//        } else if (Bank.contains(PickAxe.INFERNAL_PICKAXE.getPickAxeId())) {
+//            if (miningLevel >= PickAxe.INFERNAL_PICKAXE.getPickAxeLevel()) {
+//                return Optional.of(PickAxe.INFERNAL_PICKAXE);
+//            }
+//        } else if (Bank.contains(PickAxe.INFERNAL_PICKAXE_UNCHARGED.getPickAxeId())) {
+//            if (miningLevel >= PickAxe.INFERNAL_PICKAXE_UNCHARGED.getPickAxeLevel()) {
+//                return Optional.of(PickAxe.INFERNAL_PICKAXE_UNCHARGED);
+//            }
+//        } else if (Bank.contains(PickAxe.DRAGON_PICKAXE_UPGRADED.getPickAxeId())) {
+//            if (miningLevel >= PickAxe.DRAGON_PICKAXE_UPGRADED.getPickAxeLevel()) {
+//                return Optional.of(PickAxe.DRAGON_PICKAXE_UPGRADED);
+//            }
+//        } else if (Bank.contains(PickAxe.DRAGON_PICKAXE_OR.getPickAxeId())) {
+//            if (miningLevel >= PickAxe.DRAGON_PICKAXE_OR.getPickAxeLevel()) {
+//                return Optional.of(PickAxe.DRAGON_PICKAXE_OR);
+//            }
+//        } else if (Bank.contains(PickAxe.DRAGON_PICKAXE.getPickAxeId())) {
+//            if (miningLevel >= PickAxe.DRAGON_PICKAXE.getPickAxeLevel()) {
+//                return Optional.of(PickAxe.DRAGON_PICKAXE);
+//            }
+//        } else if (Bank.contains(PickAxe.RUNE_PICKAXE.getPickAxeId())) {
+//            if (miningLevel >= PickAxe.RUNE_PICKAXE.getPickAxeLevel()) {
+//                return Optional.of(PickAxe.RUNE_PICKAXE);
+//            }
+//        } else if (Bank.contains(PickAxe.ADAMANT_PICKAXE.getPickAxeId())) {
+//            if (miningLevel >= PickAxe.ADAMANT_PICKAXE.getPickAxeLevel()) {
+//                return Optional.of(PickAxe.ADAMANT_PICKAXE);
+//            }
+//        } else if (Bank.contains(PickAxe.MITHRIL_PICKAXE.getPickAxeId())) {
+//            if (miningLevel >= PickAxe.MITHRIL_PICKAXE.getPickAxeLevel()) {
+//                return Optional.of(PickAxe.MITHRIL_PICKAXE);
+//            }
+//        } else if (Bank.contains(PickAxe.BLACK_PICKAXE.getPickAxeId())) {
+//            if (miningLevel >= PickAxe.BLACK_PICKAXE.getPickAxeLevel()) {
+//                return Optional.of(PickAxe.BLACK_PICKAXE);
+//            }
+//        } else if (Bank.contains(PickAxe.STEEL_PICKAXE.getPickAxeId())) {
+//            if (miningLevel >= PickAxe.STEEL_PICKAXE.getPickAxeLevel()) {
+//                return Optional.of(PickAxe.STEEL_PICKAXE);
+//            }
+//        } else if (Bank.contains(PickAxe.IRON_PICKAXE.getPickAxeId())) {
+//            if (miningLevel >= PickAxe.IRON_PICKAXE.getPickAxeLevel()) {
+//                return Optional.of(PickAxe.IRON_PICKAXE);
+//            }
+//        } else if (Bank.contains(PickAxe.BRONZE_PICKAXE.getPickAxeId())) {
+//            if (miningLevel >= PickAxe.BRONZE_PICKAXE.getPickAxeLevel()) {
+//                return Optional.of(PickAxe.BRONZE_PICKAXE);
+//            }
+//        }
+//
+//        return Optional.empty();
+//    }
 
     static Optional<PickAxe> calculateOptimalPickAxeInBankCache(int miningLevel) {
         // order always matters
@@ -637,59 +669,59 @@ public interface Workable {
             if (miningLevel >= PickAxe.CRYSTAL_PICKAXE.getPickAxeLevel()) {
                 return Optional.of(PickAxe.CRYSTAL_PICKAXE);
             }
-        } else if (Bank.contains(PickAxe.CRYSTAL_PICKAXE_UNCHARGED.getPickAxeId())) {
+        } else if (bankCacheContains(PickAxe.CRYSTAL_PICKAXE_UNCHARGED.getPickAxeId())) {
             if (miningLevel >= PickAxe.CRYSTAL_PICKAXE_UNCHARGED.getPickAxeLevel()) {
                 return Optional.of(PickAxe.CRYSTAL_PICKAXE_UNCHARGED);
             }
-        } else if (Bank.contains(PickAxe.INFERNAL_PICKAXE_OR.getPickAxeId())) {
+        } else if (bankCacheContains(PickAxe.INFERNAL_PICKAXE_OR.getPickAxeId())) {
             if (miningLevel >= PickAxe.INFERNAL_PICKAXE_OR.getPickAxeLevel()) {
                 return Optional.of(PickAxe.INFERNAL_PICKAXE_OR);
             }
-        } else if (Bank.contains(PickAxe.INFERNAL_PICKAXE.getPickAxeId())) {
+        } else if (bankCacheContains(PickAxe.INFERNAL_PICKAXE.getPickAxeId())) {
             if (miningLevel >= PickAxe.INFERNAL_PICKAXE.getPickAxeLevel()) {
                 return Optional.of(PickAxe.INFERNAL_PICKAXE);
             }
-        } else if (Bank.contains(PickAxe.INFERNAL_PICKAXE_UNCHARGED.getPickAxeId())) {
+        } else if (bankCacheContains(PickAxe.INFERNAL_PICKAXE_UNCHARGED.getPickAxeId())) {
             if (miningLevel >= PickAxe.INFERNAL_PICKAXE_UNCHARGED.getPickAxeLevel()) {
                 return Optional.of(PickAxe.INFERNAL_PICKAXE_UNCHARGED);
             }
-        } else if (Bank.contains(PickAxe.DRAGON_PICKAXE_UPGRADED.getPickAxeId())) {
+        } else if (bankCacheContains(PickAxe.DRAGON_PICKAXE_UPGRADED.getPickAxeId())) {
             if (miningLevel >= PickAxe.DRAGON_PICKAXE_UPGRADED.getPickAxeLevel()) {
                 return Optional.of(PickAxe.DRAGON_PICKAXE_UPGRADED);
             }
-        } else if (Bank.contains(PickAxe.DRAGON_PICKAXE_OR.getPickAxeId())) {
+        } else if (bankCacheContains(PickAxe.DRAGON_PICKAXE_OR.getPickAxeId())) {
             if (miningLevel >= PickAxe.DRAGON_PICKAXE_OR.getPickAxeLevel()) {
                 return Optional.of(PickAxe.DRAGON_PICKAXE_OR);
             }
-        } else if (Bank.contains(PickAxe.DRAGON_PICKAXE.getPickAxeId())) {
+        } else if (bankCacheContains(PickAxe.DRAGON_PICKAXE.getPickAxeId())) {
             if (miningLevel >= PickAxe.DRAGON_PICKAXE.getPickAxeLevel()) {
                 return Optional.of(PickAxe.DRAGON_PICKAXE);
             }
-        } else if (Bank.contains(PickAxe.RUNE_PICKAXE.getPickAxeId())) {
+        } else if (bankCacheContains(PickAxe.RUNE_PICKAXE.getPickAxeId())) {
             if (miningLevel >= PickAxe.RUNE_PICKAXE.getPickAxeLevel()) {
                 return Optional.of(PickAxe.RUNE_PICKAXE);
             }
-        } else if (Bank.contains(PickAxe.ADAMANT_PICKAXE.getPickAxeId())) {
+        } else if (bankCacheContains(PickAxe.ADAMANT_PICKAXE.getPickAxeId())) {
             if (miningLevel >= PickAxe.ADAMANT_PICKAXE.getPickAxeLevel()) {
                 return Optional.of(PickAxe.ADAMANT_PICKAXE);
             }
-        } else if (Bank.contains(PickAxe.MITHRIL_PICKAXE.getPickAxeId())) {
+        } else if (bankCacheContains(PickAxe.MITHRIL_PICKAXE.getPickAxeId())) {
             if (miningLevel >= PickAxe.MITHRIL_PICKAXE.getPickAxeLevel()) {
                 return Optional.of(PickAxe.MITHRIL_PICKAXE);
             }
-        } else if (Bank.contains(PickAxe.BLACK_PICKAXE.getPickAxeId())) {
+        } else if (bankCacheContains(PickAxe.BLACK_PICKAXE.getPickAxeId())) {
             if (miningLevel >= PickAxe.BLACK_PICKAXE.getPickAxeLevel()) {
                 return Optional.of(PickAxe.BLACK_PICKAXE);
             }
-        } else if (Bank.contains(PickAxe.STEEL_PICKAXE.getPickAxeId())) {
+        } else if (bankCacheContains(PickAxe.STEEL_PICKAXE.getPickAxeId())) {
             if (miningLevel >= PickAxe.STEEL_PICKAXE.getPickAxeLevel()) {
                 return Optional.of(PickAxe.STEEL_PICKAXE);
             }
-        } else if (Bank.contains(PickAxe.IRON_PICKAXE.getPickAxeId())) {
+        } else if (bankCacheContains(PickAxe.IRON_PICKAXE.getPickAxeId())) {
             if (miningLevel >= PickAxe.IRON_PICKAXE.getPickAxeLevel()) {
                 return Optional.of(PickAxe.IRON_PICKAXE);
             }
-        } else if (Bank.contains(PickAxe.BRONZE_PICKAXE.getPickAxeId())) {
+        } else if (bankCacheContains(PickAxe.BRONZE_PICKAXE.getPickAxeId())) {
             if (miningLevel >= PickAxe.BRONZE_PICKAXE.getPickAxeLevel()) {
                 return Optional.of(PickAxe.BRONZE_PICKAXE);
             }
@@ -801,39 +833,8 @@ public interface Workable {
         }
     }
 
-    default boolean openGemBag() {
-        if (Inventory.contains(GEM_BAG_OPEN) || !Inventory.contains(GEM_BAG)) {
-            return false;
-        }
-
-        Query.inventory()
-                .idEquals(GEM_BAG)
-                .findFirst()
-                .ifPresent(inventoryItem -> inventoryItem.click("Open"));
-
-        return Waiting.waitUntil(() -> Inventory.contains(GEM_BAG_OPEN));
-    }
-
-    default boolean openCoalBag() {
-        if (Inventory.contains(COAL_BAG_OPEN) || !Inventory.contains(COAL_BAG)) {
-            return false;
-        }
-
-        Query.inventory()
-                .idEquals(COAL_BAG)
-                .findFirst()
-                .ifPresent(inventoryItem -> inventoryItem.click("Open"));
-
-        return Waiting.waitUntil(() -> Inventory.contains(COAL_BAG_OPEN));
-    }
-
-    default int calculateGoldGained() {
-        return Inventory.getAll().stream()
-                .filter(inventoryItem -> inventoryItem.getName().contains("ore") || inventoryItem.getName().contains("Coal"))
-                .map(Item::lookupPrice)
-                .filter(Optional::isPresent)
-                .mapToInt(Optional::get)
-                .sum();
+    static boolean bankCacheContains(int id) {
+        return BankCache.getStack(id) > 0;
     }
 
     /**

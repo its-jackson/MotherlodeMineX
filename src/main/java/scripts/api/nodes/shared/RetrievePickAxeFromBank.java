@@ -58,7 +58,7 @@ public class RetrievePickAxeFromBank implements Nodeable, Workable {
             }
             // calculate optimal pickaxe
             if (!getVariables().getSettings().isDoNotUpgrade()) {
-                Workable.calculateOptimalPickAxeInBank(Skill.MINING.getActualLevel())
+                Workable.calculateOptimalPickAxeInBankCache(Skill.MINING.getActualLevel())
                         .ifPresent(this::setWorkerOptimalPickaxe);
             } else {
                 setWorkerOptimalPickaxe(Worker.getInstance().getPickaxe());
@@ -70,7 +70,7 @@ public class RetrievePickAxeFromBank implements Nodeable, Workable {
                     if (Bank.withdraw(getWorkerOptimalPickaxe().getPickAxeId(), 1)) {
                         boolean result = Waiting.waitUntil(() -> Inventory.contains(getWorkerOptimalPickaxe().getPickAxeId()));
                         if (result) {
-                            if (Worker.getInstance().getActualAttackLevel() >= getWorkerOptimalPickaxe().getPickAxeLevel()) {
+                            if (Skill.ATTACK.getActualLevel() >= getWorkerOptimalPickaxe().getPickAxeLevel()) {
                                 String equipping = "Equipping " + getWorkerOptimalPickaxe();
                                 log(equipping);
                                 getVariables().setState(equipping);

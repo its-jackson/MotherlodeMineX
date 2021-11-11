@@ -11,13 +11,12 @@ import scripts.api.interfaces.Workable;
 
 public class Worker {
 
-    private final static Worker instance = new Worker();
+    private static final Worker instance = new Worker();
 
     public final String user_name = Tribot.getUsername();
 
     private Workable.PickAxe pickaxe;
 
-    private int actualAttackLevel;
     private int oreCount;
     private int levelCount;
     private int startExperience;
@@ -48,14 +47,6 @@ public class Worker {
 
     public void setPickaxe(Workable.PickAxe pickaxe) {
         this.pickaxe = pickaxe;
-    }
-
-    public int getActualAttackLevel() {
-        return actualAttackLevel;
-    }
-
-    public void setActualAttackLevel(int actualAttackLevel) {
-        this.actualAttackLevel = actualAttackLevel;
     }
 
     public int getOreCount() {
@@ -103,7 +94,6 @@ public class Worker {
         return "Worker{" +
                 "user_name='" + user_name + '\'' +
                 ", pickaxe=" + pickaxe +
-                ", actualAttackLevel=" + actualAttackLevel +
                 ", oreCount=" + oreCount +
                 ", levelCount=" + levelCount +
                 ", startExperience=" + startExperience +
