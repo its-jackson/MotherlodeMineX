@@ -1,7 +1,10 @@
 package scripts.api.nodes.motherlodemine;
 
+import org.tribot.api.General;
 import org.tribot.script.sdk.Bank;
 import org.tribot.script.sdk.Equipment;
+import org.tribot.script.sdk.Inventory;
+import org.tribot.script.sdk.Waiting;
 import org.tribot.script.sdk.tasks.BankTask;
 import scripts.MotherlodeMineXVariables;
 import scripts.api.works.Work;
@@ -57,38 +60,50 @@ public class RetrieveMotherlodeEquipment implements Nodeable, Workable {
 
             if (Bank.withdraw(PROSPECTOR_HELMET, 1)) {
                 log("Withdrew prospector helmet");
-                if (Equipment.equip(PROSPECTOR_HELMET)) {
-                    log("Equipped prospector helmet");
+                if (Waiting.waitUntil(() -> Inventory.contains(PROSPECTOR_HELMET))) {
+                    if (Equipment.equip(PROSPECTOR_HELMET)) {
+                        log("Equipped prospector helmet");
+                    }
                 }
             }
             if (Bank.withdraw(PROSPECTOR_JACKET, 1)) {
                 log("Withdrew prospector jacket");
-                if (Equipment.equip(PROSPECTOR_JACKET)) {
-                    log("Equipped prospector jacket");
+                if (Waiting.waitUntil(() -> Inventory.contains(PROSPECTOR_JACKET))) {
+                    if (Equipment.equip(PROSPECTOR_JACKET)) {
+                        log("Equipped prospector jacket");
+                    }
                 }
             }
             if (Bank.withdraw(PROSPECTOR_LEGS, 1)) {
                 log("Withdrew prospector legs");
-                if (Equipment.equip(PROSPECTOR_LEGS)) {
-                    log("Equipped prospector legs");
+                if (Waiting.waitUntil(() -> Inventory.contains(PROSPECTOR_LEGS))) {
+                    if (Equipment.equip(PROSPECTOR_LEGS)) {
+                        log("Equipped prospector legs");
+                    }
                 }
             }
             if (Bank.withdraw(PROSPECTOR_BOOTS, 1)) {
                 log("Withdrew prospector boots");
-                if (Equipment.equip(PROSPECTOR_BOOTS)) {
-                    log("Equipped prospector boots");
+                if (Waiting.waitUntil(() -> Inventory.contains(PROSPECTOR_BOOTS))) {
+                    if (Equipment.equip(PROSPECTOR_BOOTS)) {
+                        log("Equipped prospector boots");
+                    }
                 }
             }
             if (Bank.withdraw(MINING_CAPE_UNTRIMMED, 1)) {
                 log("Withdrew mining cape untrimmed");
-                if (Equipment.equip(MINING_CAPE_UNTRIMMED)) {
-                    log("Equipped mining cape untrimmed");
+                if (Waiting.waitUntil(() -> Inventory.contains(MINING_CAPE_UNTRIMMED))) {
+                    if (Equipment.equip(MINING_CAPE_UNTRIMMED)) {
+                        log("Equipped mining cape untrimmed");
+                    }
                 }
             }
             if (Bank.withdraw(MINING_CAPE_TRIMMED, 1)) {
                 log("Withdrew mining cape trimmed");
-                if (Equipment.equip(MINING_CAPE_TRIMMED)) {
-                    log("Equipped mining cape trimmed");
+                if (Waiting.waitUntil(() -> Inventory.contains(MINING_CAPE_TRIMMED))) {
+                    if (Equipment.equip(MINING_CAPE_TRIMMED)) {
+                        log("Equipped mining cape trimmed");
+                    }
                 }
             }
 
