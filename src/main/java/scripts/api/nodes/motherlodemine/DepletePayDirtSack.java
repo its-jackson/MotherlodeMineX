@@ -2,7 +2,6 @@ package scripts.api.nodes.motherlodemine;
 
 import org.tribot.script.sdk.Inventory;
 import org.tribot.script.sdk.Waiting;
-import org.tribot.script.sdk.interfaces.Item;
 import org.tribot.script.sdk.query.Query;
 import org.tribot.script.sdk.types.GameObject;
 import scripts.MotherlodeMineXVariables;

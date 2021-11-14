@@ -334,6 +334,7 @@ public interface Workable {
      */
     default boolean payDirtSackIsFull() {
         // the interface for the payDirtSack
+        // hard-coded
         Optional<Widget> payDirtInterface = Query.widgets()
                 .inIndexPath(382, 3, 2)
                 .findFirst();
@@ -348,6 +349,7 @@ public interface Workable {
         int count = -1;
 
         // the interface for the payDirtSack
+        // hard-coded
         Optional<Widget> payDirtInterface = Query.widgets()
                 .inIndexPath(382, 3, 2)
                 .findFirst();

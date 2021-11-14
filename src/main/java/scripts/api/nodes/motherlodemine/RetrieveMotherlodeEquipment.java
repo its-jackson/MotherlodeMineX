@@ -35,31 +35,67 @@ public class RetrieveMotherlodeEquipment implements Nodeable, Workable {
             }
         }
 
-        // last time i checked the bank task doesn't function -
-        // if the items don't exist in the players bank
         // need to use bank task in future
         if (Bank.isOpen()) {
-            depositAllMotherlodeMine(Worker.getInstance().getPickaxe());
+            final int firstDeposit = depositAllMotherlodeMine(Worker.getInstance().getPickaxe());
+            if (firstDeposit > 0) {
+                log("Deposited inventory");
+            }
 
-            Bank.withdraw(GEM_BAG, 1);
-            Bank.withdraw(GEM_BAG_OPEN, 1);
-            Bank.withdraw(COAL_BAG,1);
-            Bank.withdraw(COAL_BAG_OPEN, 1);
-            Bank.withdraw(PROSPECTOR_HELMET, 1);
-            Bank.withdraw(PROSPECTOR_JACKET, 1);
-            Bank.withdraw(PROSPECTOR_LEGS, 1);
-            Bank.withdraw(PROSPECTOR_BOOTS, 1);
-            Bank.withdraw(MINING_CAPE_UNTRIMMED, 1);
-            Bank.withdraw(MINING_CAPE_TRIMMED, 1);
+            if (Bank.withdraw(GEM_BAG, 1)) {
+                log("Withdrew gem bag");
+            }
+            if (Bank.withdraw(GEM_BAG_OPEN, 1)) {
+                log("Withdrew open gem bag");
+            }
+            if (Bank.withdraw(COAL_BAG,1)) {
+                log("Withdrew coal bag");
+            }
+            if (Bank.withdraw(COAL_BAG_OPEN, 1)) {
+                log("Withdrew open coal bag");
+            }
 
-            Equipment.equip(PROSPECTOR_HELMET);
-            Equipment.equip(PROSPECTOR_JACKET);
-            Equipment.equip(PROSPECTOR_LEGS);
-            Equipment.equip(PROSPECTOR_BOOTS);
-            Equipment.equip(MINING_CAPE_UNTRIMMED);
-            Equipment.equip(MINING_CAPE_TRIMMED);
+            if (Bank.withdraw(PROSPECTOR_HELMET, 1)) {
+                log("Withdrew prospector helmet");
+                if (Equipment.equip(PROSPECTOR_HELMET)) {
+                    log("Equipped prospector helmet");
+                }
+            }
+            if (Bank.withdraw(PROSPECTOR_JACKET, 1)) {
+                log("Withdrew prospector jacket");
+                if (Equipment.equip(PROSPECTOR_JACKET)) {
+                    log("Equipped prospector jacket");
+                }
+            }
+            if (Bank.withdraw(PROSPECTOR_LEGS, 1)) {
+                log("Withdrew prospector legs");
+                if (Equipment.equip(PROSPECTOR_LEGS)) {
+                    log("Equipped prospector legs");
+                }
+            }
+            if (Bank.withdraw(PROSPECTOR_BOOTS, 1)) {
+                log("Withdrew prospector boots");
+                if (Equipment.equip(PROSPECTOR_BOOTS)) {
+                    log("Equipped prospector boots");
+                }
+            }
+            if (Bank.withdraw(MINING_CAPE_UNTRIMMED, 1)) {
+                log("Withdrew mining cape untrimmed");
+                if (Equipment.equip(MINING_CAPE_UNTRIMMED)) {
+                    log("Equipped mining cape untrimmed");
+                }
+            }
+            if (Bank.withdraw(MINING_CAPE_TRIMMED, 1)) {
+                log("Withdrew mining cape trimmed");
+                if (Equipment.equip(MINING_CAPE_TRIMMED)) {
+                    log("Equipped mining cape trimmed");
+                }
+            }
 
-            depositAllMotherlodeMine(Worker.getInstance().getPickaxe());
+            final int lastDeposit = depositAllMotherlodeMine(Worker.getInstance().getPickaxe());
+            if (lastDeposit > 0) {
+                log("Deposited inventory");
+            }
         }
 
     }
