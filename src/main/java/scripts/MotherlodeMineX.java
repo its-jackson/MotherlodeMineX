@@ -94,8 +94,8 @@ public class MotherlodeMineX implements TribotScript {
         // set global walking engine
         GlobalWalking.setEngine(
                 new DaxWalkerAdapter(
-                        "sub_JK3knXqxVGZtGR",
-                        "74aa47de-1cb1-4ee1-a8c9-5bae53c70b22")
+                        "",
+                        "")
         );
 
         // anti ban settings
